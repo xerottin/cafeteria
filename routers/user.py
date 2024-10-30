@@ -15,15 +15,15 @@ router = APIRouter(prefix="/user", tags=["user"])
 
 @router.post("/", response_model=UserInDB)
 async def create_user(user: UserCreate, db: Session = Depends(get_pg_db)):
-    return create_user(user, db)
+    return db_user.create_user(user, db)
 @router.get("/")
 async def get_user(pk:int, db:Session = Depends(get_pg_db)):
     return db_user.get_user(db, pk)
 
 @router.put("/{user_id}", response_model=UserInDB)
-async def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_pg_db)):
-    return db_user.update_user(db, user_id, user_update)
+async def update_user(pk: int, user_update: UserUpdate, db: Session = Depends(get_pg_db)):
+    return db_user.update_user(pk, db, user_update)
 
 @router.delete("/")
-async def delete_user(user_id: int, db: Session = Depends(get_pg_db)):
-    return db_user.delete_user(db, user_id)
+async def delete_user(pk: int, db: Session = Depends(get_pg_db)):
+    return db_user.delete_user(db, pk)

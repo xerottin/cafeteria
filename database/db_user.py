@@ -7,7 +7,7 @@ from passlib.context import CryptContext
 
 from database.base import get_pg_db
 from models import User
-from schemas.user import UserUpdate, UserInDB, UserCreate
+from schemas.user import UserInDB, UserCreate
 from settings import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -52,8 +52,8 @@ def get_user(db: Session, pk: int):
     return user
 
 
-def update_user(db: Session, user_id: int, user_update):
-    user = db.query(User).filter(User.id == user_id).first()
+def update_user( pk: int,db: Session, user_update):
+    user = db.query(User).filter(User.id == pk).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     if user_update.username and user_update.username != user.username:
@@ -77,8 +77,8 @@ def update_user(db: Session, user_id: int, user_update):
         token_type="bearer"
     )
 
-def delete_user(db: Session, user_id: int):
-    user = db.query(User).filter(User.id == user_id).first()
+def delete_user(db: Session, pk: int):
+    user = db.query(User).filter(User.id == pk).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     user.is_active = False
