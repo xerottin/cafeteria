@@ -6,7 +6,6 @@ from fastapi import HTTPException, status
 
 from database.db_user import hash_password, create_access_token
 from models import Admin
-from schemas import admin
 from schemas.admin import AdminCreate, AdminInDB
 from database.base import get_pg_db
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
