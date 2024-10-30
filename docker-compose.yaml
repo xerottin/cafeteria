@@ -11,6 +11,8 @@ services:
       - DATABASE_URL=postgresql://postgres:1111@db:5432/coffe
     depends_on:
       - db
+    networks:
+      - app-network
 
   db:
     image: postgres:16
@@ -19,8 +21,16 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1111
       POSTGRES_DB: coffe
+    ports:
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
 volumes:
   postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

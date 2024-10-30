@@ -1,1 +1,1 @@
-from sqlalchemy import Column, Stringfrom models import BaseModelclass Admin(BaseModel):    __tablename__ = 'admin'    name = Column(String, primary_key=True, nullable=False)    password = Column(String, nullable=False)
+from sqlalchemy import Column, Stringfrom models import BaseModelclass Admin(BaseModel):    __tablename__ = 'admin'    name = Column(String, primary_key=True, nullable=False)    hashed_password = Column(String)

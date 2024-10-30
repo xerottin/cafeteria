@@ -10,5 +10,6 @@ class Company(BaseModel):
     phone = Column(String)
     email = Column(String)
     owner = Column(String)
+    hashed_password = Column(String)
 
     clients = relationship('Client', back_populates='company')
