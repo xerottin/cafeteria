@@ -17,4 +17,7 @@ class UserCreate(UserBase):
     password: str
 
 class UserUpdate(UserBase):
-    password: str
+    password: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    image: str | None = None
