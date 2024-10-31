@@ -1,14 +1,14 @@
 from fastapi import APIRouter
 from fastapi.params import Depends
 from sqlalchemy.orm import Session
-from database import db_admin, db_user
-from schemas.admin import AdminCreate, AdminInDB
+from database import db_admin
+from schemas.admin import AdminCreate, AdminInDB, AdminResponse, AdminUpdate
 from database.base import get_pg_db
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 
-@router.post("/", response_model=AdminCreate)
+@router.post("/", response_model=AdminResponse)
 async def create_admin(admin: AdminCreate, db: Session = Depends(get_pg_db)):
     return db_admin.create_admin(admin, db)
 
@@ -19,10 +19,10 @@ async def get_admin(pk:int, db: Session = Depends(get_pg_db)):
 @router.put("/{pk}", response_model=AdminInDB)
 async def put_admin(
     pk: int,
-    admin_update: AdminCreate,
+    admin_update: AdminUpdate,
     db: Session = Depends(get_pg_db)
 ):
-    return await db_admin.update_admin(pk, db, admin_update)
+    return db_admin.update_admin(pk, db, admin_update)
 
 @router.delete("/{pk}", response_model=AdminInDB)
 async def delete_admin(pk:int, db: Session = Depends(get_pg_db)):

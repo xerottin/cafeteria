@@ -1,18 +1,23 @@
 from datetime import datetime
-
 from pydantic import BaseModel
+from typing import Optional
 
 class AdminBase(BaseModel):
     username: str
-    password: str
-
-
-class AdminInDB(AdminBase):
-    created_at: datetime
-    updated_at: datetime
-    hashed_password: str
-
 
 class AdminCreate(AdminBase):
-    pass
+    password: str
 
+class AdminResponse(AdminBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
+
+class AdminUpdate(BaseModel):
+    username: Optional[str] = None
+    password: Optional[str] = None
+
+class AdminInDB(AdminBase):
+    id: int
+    created_at: datetime
+    updated_at: datetime
