@@ -6,7 +6,7 @@ from models.base import BaseModel
 
 class Company(BaseModel):
     __tablename__ = 'company'
-    name = Column(String, nullable=False)
+    username = Column(String, nullable=False)
     phone = Column(String)
     email = Column(String)
     owner = Column(String)

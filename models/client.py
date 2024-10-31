@@ -7,7 +7,7 @@ from models import BaseModel
 
 class Client(BaseModel):
     __tablename__ = 'client'
-    name = Column(String, nullable=False)
+    username = Column(String, nullable=False)
     phone = Column(String)
     url = Column(String)
     hashed_password = Column(String)

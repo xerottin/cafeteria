@@ -1,1 +1,1 @@
-from sqlalchemy import Column, Stringfrom models import BaseModelclass Admin(BaseModel):    __tablename__ = 'admin'    name = Column(String, primary_key=True, nullable=False)    hashed_password = Column(String)
+from sqlalchemy.orm import Mapped, mapped_columnfrom sqlalchemy import Stringfrom .base import BaseModelclass Admin(BaseModel):    __tablename__ = 'admin'    username: Mapped[str] = mapped_column(String, unique=True, nullable=False)    password: Mapped[str] = mapped_column(String, nullable=False)
