@@ -20,7 +20,7 @@ async def create_user(user: UserCreate, db: Session = Depends(get_pg_db)):
 async def get_user(pk:int, db:Session = Depends(get_pg_db)):
     return db_user.get_user(db, pk)
 
-@router.put("/{user_id}", response_model=UserInDB)
+@router.put("/{pk}", response_model=UserInDB)
 async def update_user(pk: int, user_update: UserUpdate, db: Session = Depends(get_pg_db)):
     return db_user.update_user(pk, db, user_update)
 
