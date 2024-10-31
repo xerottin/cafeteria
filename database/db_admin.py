@@ -12,7 +12,7 @@ from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 def create_admin(admin: AdminCreate, db: Session = Depends(get_pg_db)):
-    existing_admin = db.query(Admin).filter(Admin.name == admin.name).first()
+    existing_admin = db.query(Admin).filter(Admin.username == admin.username).first()
     if existing_admin:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -20,19 +20,12 @@ def create_admin(admin: AdminCreate, db: Session = Depends(get_pg_db)):
         )
 
     hashed_password = hash_password(admin.password)
-    new_admin = Admin(name=admin.name, hashed_password=hashed_password)
+    new_admin = Admin(username=admin.username, hashed_password=hashed_password)
 
     db.add(new_admin)
     db.commit()
     db.refresh(new_admin)
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"name": admin.name}, expires_delta=access_token_expires)
-
-    return AdminInDB(
-        name=new_admin.name,
-        access_token=access_token,
-        token_type="bearer"
-    )
+    return new_admin
 
 def get_admin(pk:int, db: Session = Depends(get_pg_db)):
     admin = db.query(Admin).filter(Admin.id == pk).first()
@@ -48,14 +41,14 @@ async def update_admin(pk: int, db: Session, admin_update: AdminCreate):
             detail="Admin not found"
         )
 
-    if admin_update.name:
-        existing_admin = db.query(Admin).filter(Admin.name == admin_update.name).first()
+    if admin_update.username:
+        existing_admin = db.query(Admin).filter(Admin.username == admin_update.username).first()
         if existing_admin and existing_admin.id != pk:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Имя уже зарегистрировано"
             )
-        db_admin.name = admin_update.name
+        db_admin.name = admin_update.username
 
     if admin_update.password:
         db_admin.hashed_password = hash_password(admin_update.password)

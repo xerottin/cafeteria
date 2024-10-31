@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from models import BaseModel
-
+from pydantic import BaseModel
 
 class AdminBase(BaseModel):
-    id: int
-    name: str
+    username: str
+    password: str
+
 
 class AdminInDB(AdminBase):
     created_at: datetime
@@ -14,6 +14,5 @@ class AdminInDB(AdminBase):
 
 
 class AdminCreate(AdminBase):
-    password: str
-
+    pass
 
