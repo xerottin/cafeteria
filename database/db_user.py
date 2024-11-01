@@ -41,6 +41,7 @@ def create_user(user:UserCreate, db: Session = Depends(get_pg_db)):
     access_token = create_access_token(data={"username": user.username}, expires_delta=access_token_expires)
 
     return UserInDB(
+        id=new_user.id,
         username=new_user.username,
         access_token=access_token,
         token_type="bearer"
