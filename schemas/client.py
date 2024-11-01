@@ -22,11 +22,11 @@ class ClientCreate(ClientBase):
     pass
 
 
-# class ClientUpdate(ClientBase):
-#     username: str | None = None
-#     password: str | None = None
-#     phone: str | None = None
-#     url: str | None = None
-#     logo: str | None = None
-#     company_id: int | None = None
+class ClientUpdate(ClientBase):
+    username: str | None = None
+    password: str | None = None
+    phone: str | None = None
+    url: str | None = None
+    logo: str | None = None
+    company_id: int | None = None
 
