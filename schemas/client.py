@@ -1,20 +1,32 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
 class ClientBase(BaseModel):
-    id: int
-    name: str
-    phone: str | None = None
-    url: str | None = None
-    company_id: str | None = None
+    username: str
+    password: str
+
 
 class ClientInDB(ClientBase):
-    created_at: str
-    updated_at: str
-    hashed_password: str
+    id: int
+    phone: str
+    url: str
+    company_id: str
+    created_at: datetime
+    updated_at: datetime
+    is_active: bool
+    logo: str
 
 class ClientCreate(ClientBase):
-    password: str
+    pass
+
 
 class ClientUpdate(ClientBase):
-    password: str
+    username: str | None = None
+    password: str | None = None
+    phone: str | None = None
+    url: str | None = None
+    logo: str | None = None
+    company_id: int | None = None
+
