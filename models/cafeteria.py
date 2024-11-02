@@ -5,7 +5,8 @@ from models import BaseModel
 
 class Cafeteria(BaseModel):
     __tablename__ = 'cafeteria'
-    name = Column(String, nullable=False)
+    username = Column(String, nullable=False)
+    password = Column(String, nullable=False)
     phone = Column(String)
     url = Column(String)
     latitude = Column(Float)  # Широта
@@ -29,7 +30,7 @@ class Menu(BaseModel):
 
 class Coffee(BaseModel):
     __tablename__ = 'coffee'
-    name = Column(String, nullable=False)
+    username = Column(String, nullable=False)
     origin = Column(String)
     flavor_profile = Column(String)
     bean_type = Column(String)

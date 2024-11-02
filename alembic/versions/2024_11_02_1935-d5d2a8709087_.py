@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 27cd87aaad1a
+Revision ID: d5d2a8709087
 Revises: 
-Create Date: 2024-11-02 18:53:50.938672
+Create Date: 2024-11-02 19:35:15.131295
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '27cd87aaad1a'
+revision: str = 'd5d2a8709087'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,7 +32,7 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_admin_id'), 'admin', ['id'], unique=False)
     op.create_table('coffee',
-    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('username', sa.String(), nullable=False),
     sa.Column('origin', sa.String(), nullable=True),
     sa.Column('flavor_profile', sa.String(), nullable=True),
     sa.Column('bean_type', sa.String(), nullable=True),
@@ -81,7 +81,8 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_user_id'), 'user', ['id'], unique=False)
     op.create_table('cafeteria',
-    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('username', sa.String(), nullable=False),
+    sa.Column('password', sa.String(), nullable=False),
     sa.Column('phone', sa.String(), nullable=True),
     sa.Column('url', sa.String(), nullable=True),
     sa.Column('latitude', sa.Float(), nullable=True),

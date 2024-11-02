@@ -48,7 +48,7 @@ def edit_cafeteria(db: Session, pk: int, data: CafeteriaUpdate ):
 def delete_cafeteria(db: Session, pk: int):
     cafeteria = db.query(Cafeteria).filter_by(id=pk).first()
     if cafeteria is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Cafeteria not found")
     cafeteria.is_active = False
     db.commit()
     db.refresh(cafeteria)
