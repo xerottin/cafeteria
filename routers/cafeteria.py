@@ -2,13 +2,13 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import db_cafeteria
 from database.base import get_pg_db
-from schemas.cafeteria import ClientCreate, ClientUpdate, ClientInDB
+from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, CafeteriaInDB
 
-router = APIRouter(prefix="", tags=["client"])
+router = APIRouter(prefix="", tags=["cafeteria"])
 
 @router.post("/")
 async def create_cafeteria(data: CafeteriaCreate, db: Session = Depends(get_pg_db)):
-    client, access_token = db_cafeteria.create_cafeteria(data, db)
+    cafeteria, access_token = db_cafeteria.create_cafeteria(data, db)
     return cafeteria, access_token
 
 @router.get("/")
