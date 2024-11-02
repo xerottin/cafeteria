@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import admin, user, client
+from routers import admin, user, client, company
 
 app = FastAPI()
 
@@ -16,3 +16,4 @@ app_user.include_router(user.router)
 
 app.mount("/client", app_client)
 app_client.include_router(client.router)
+app_client.include_router(company.router)

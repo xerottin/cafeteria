@@ -9,21 +9,21 @@ from schemas.user import UserInDB, UserCreate, UserUpdate
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
-def create_user(user:UserCreate, db: Session = Depends(get_pg_db)):
-    existing_user = db.query(User).filter(User.username == user.username).first()
+def create_user(data:UserCreate, db: Session = Depends(get_pg_db)):
+    existing_user = db.query(User).filter(User.username == data.username).first()
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already registered"
         )
-    hashed_password = hash_password(user.password)
-    new_user = User(username=user.username, hashed_password=hashed_password)
+    hashed_password = hash_password(data.password)
+    new_user = User(username=data.username, password=hashed_password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"username": user.username}, expires_delta=access_token_expires)
+    access_token = create_access_token(data={"username": data.username}, expires_delta=access_token_expires)
 
     return UserInDB(
         id=new_user.id,
