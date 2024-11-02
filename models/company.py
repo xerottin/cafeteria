@@ -6,10 +6,11 @@ from models.base import BaseModel
 
 class Company(BaseModel):
     __tablename__ = 'company'
-    username = Column(String, nullable=False)
+    username = Column(String, nullable=False, unique=True)
     password = Column(String)
     phone = Column(String)
-    email = Column(String)
+    email = Column(String, unique=True)
     owner = Column(String)
+    logo = Column(String)
 
-    clients = relationship('Client', back_populates='company')
+    cafeteria = relationship('Cafeteria', back_populates='company')

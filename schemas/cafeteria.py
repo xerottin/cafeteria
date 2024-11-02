@@ -3,12 +3,12 @@ from datetime import datetime
 from pydantic import BaseModel
 
 
-class ClientBase(BaseModel):
+class CafeteriaBase(BaseModel):
     username: str
     password: str
 
 
-class ClientInDB(ClientBase):
+class CafeteriaInDB(CafeteriaBase):
     id: int
     phone: str
     url: str
@@ -18,11 +18,11 @@ class ClientInDB(ClientBase):
     is_active: bool
     logo: str
 
-class ClientCreate(ClientBase):
+class CafeteriaCreate(CafeteriaBase):
     pass
 
 
-class ClientUpdate(ClientBase):
+class CafeteriaUpdate(CafeteriaBase):
     username: str | None = None
     password: str | None = None
     phone: str | None = None

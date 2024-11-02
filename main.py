@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import admin, user, client, company
+from routers import admin, user, cafeteria, company
 
 app = FastAPI()
 
