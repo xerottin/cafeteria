@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from database import db_client
 from database.base import get_pg_db
@@ -20,6 +20,6 @@ async def put_client(pk: int, data: ClientUpdate, db: Session = Depends(get_pg_d
     return db_client.edit_client(db, pk, data)
 
 
-@router.delete("/{pk}", response_model=ClientInDB)
-def delete_admin(pk: int, db: Session = Depends(get_pg_db)):
+@router.delete("/", response_model=ClientInDB)
+def delete_client(pk: int, db: Session = Depends(get_pg_db)):
     return db_client.delete_client(db, pk)

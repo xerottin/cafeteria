@@ -7,9 +7,9 @@ from models.base import BaseModel
 class Company(BaseModel):
     __tablename__ = 'company'
     username = Column(String, nullable=False)
+    password = Column(String)
     phone = Column(String)
     email = Column(String)
     owner = Column(String)
-    hashed_password = Column(String)
 
     clients = relationship('Client', back_populates='company')

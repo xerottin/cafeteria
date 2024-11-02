@@ -8,6 +8,6 @@ class User(BaseModel):
     username = Column(String)
     name = Column(String)
     email = Column(String)
-    hashed_password = Column(String)
+    password = Column(String)
     phone = Column(String)
     image = Column(String)

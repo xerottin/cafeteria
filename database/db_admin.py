@@ -11,15 +11,15 @@ from database.base import get_pg_db
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
-def create_admin(admin: AdminCreate, db: Session = Depends(get_pg_db)):
-    existing_admin = db.query(Admin).filter(Admin.username == admin.username).first()
+def create_admin(data: AdminCreate, db: Session = Depends(get_pg_db)):
+    existing_admin = db.query(Admin).filter(Admin.username == data.username).first()
     if existing_admin:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already registered"
         )
-
-    new_admin = Admin(username=admin.username, password=admin.password)
+    hashed_password = hash_password(data.password)
+    new_admin = Admin(username=data.username, password=hashed_password)
     db.add(new_admin)
     db.commit()
     db.refresh(new_admin)
