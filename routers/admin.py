@@ -5,7 +5,7 @@ from database import db_admin
 from schemas.admin import AdminCreate, AdminInDB, AdminResponse, AdminUpdate
 from database.base import get_pg_db
 
-router = APIRouter(prefix="/admin", tags=["admin"])
+router = APIRouter(prefix="", tags=["admin"])
 
 
 @router.post("/", response_model=AdminResponse)
@@ -16,7 +16,7 @@ async def create_admin(admin: AdminCreate, db: Session = Depends(get_pg_db)):
 async def get_admin(pk:int, db: Session = Depends(get_pg_db)):
     return db_admin.get_admin(pk, db)
 
-@router.put("/{pk}", response_model=AdminInDB)
+@router.put("/", response_model=AdminInDB)
 async def put_admin(
     pk: int,
     admin_update: AdminUpdate,
@@ -24,6 +24,6 @@ async def put_admin(
 ):
     return db_admin.update_admin(pk, db, admin_update)
 
-@router.delete("/{pk}", response_model=AdminInDB)
+@router.delete("/", response_model=AdminInDB)
 async def delete_admin(pk:int, db: Session = Depends(get_pg_db)):
     return db_admin.delete_admin(pk, db)
