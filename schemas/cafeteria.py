@@ -27,6 +27,13 @@ class CafeteriaUpdate(CafeteriaBase):
     password: str | None = None
     phone: str | None = None
     url: str | None = None
+    latitude: str | None = None
+    longitude: str | None = None
     logo: str | None = None
     company_id: int | None = None
 
+class CafeteriaResponse(BaseModel):
+    id: int
+    username: str
+    latitude: float
+    longitude: float

@@ -39,6 +39,8 @@ def edit_cafeteria(db: Session, pk: int, data: CafeteriaUpdate ):
     if data.password:  cafeteria.password = data.password
     if data.phone:  cafeteria.phone = data.phone
     if data.url: cafeteria.url = data.url
+    if data.latitude: cafeteria.latitude = data.latitude
+    if data.longitude: cafeteria.longitude = data.longitude
     if data.logo: cafeteria.logo = data.logo
     if data.company_id: cafeteria.company_id = data.company_id
     db.commit()

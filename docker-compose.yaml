@@ -8,7 +8,7 @@ services:
     ports:
       - "8011:8009"
     environment:
-      - DATABASE_URL=postgresql://postgres:1111@db:5432/coffe
+      - DATABASE_URL=postgresql://postgres:1111@db:5432/cafeteria
     depends_on:
       - db
     networks:
