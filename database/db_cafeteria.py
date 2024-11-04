@@ -4,8 +4,8 @@ from models import Cafeteria
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Depends
 
-from models.cafeteria import Menu
-from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate
+from models.cafeteria import Menu, Coffee
+from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate, CoffeeCreate
 from auth.oauth2 import hash_password, create_access_token
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -74,3 +74,14 @@ def get_menu(pk: int, db: Session):
     if menu is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
     return menu
+
+
+def create_coffee(data: CoffeeCreate, db: Session):
+    exist_coffee = db.query(Coffee).filter_by(name=data.name).first()
+    if exist_coffee:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Coffee already exists")
+    new_coffee = Coffee(name=data.name, origin=data.origin, flavor_profile=data.flavor_profile, bean_type=data.bean_type, weight=data.weight, stock=data.stock, price=data.price, is_available=data.is_available, menu_id=data.menu_id )
+    db.add(new_coffee)
+    db.commit()
+    db.refresh(new_coffee)
+    return new_coffee

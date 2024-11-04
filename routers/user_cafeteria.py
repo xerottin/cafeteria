@@ -44,3 +44,7 @@ async def get_nearby_cafeterias(
 @router.get("/cafeteria/menu")
 async def menu_cafeteria(pk: int, db = Depends(get_pg_db)):
     return db_user.get_cafeteria_menu(pk, db)
+
+@router.get("/menu/coffee")
+async def menu_coffee(pk: int, db = Depends(get_pg_db)):
+    return db_user.get_menu_coffee(pk, db)

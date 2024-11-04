@@ -5,7 +5,7 @@ from fastapi import HTTPException, status, Depends
 from auth.oauth2 import hash_password, create_access_token
 from database.base import get_pg_db
 from models import User
-from models.cafeteria import Menu
+from models.cafeteria import Menu, Coffee
 from schemas.user import UserInDB, UserCreate, UserUpdate
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -79,3 +79,9 @@ def get_cafeteria_menu(pk:int, db: Session):
     if not menu:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
     return menu
+
+def get_menu_coffee(pk:int, db: Session):
+    coffee = db.query(Coffee).filter(Coffee.menu_id == pk).all()
+    if not coffee:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coffee not found")
+    return coffee
