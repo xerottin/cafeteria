@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 31a6b68671f0
+Revision ID: 3617b232bb26
 Revises: 
-Create Date: 2024-11-03 21:06:25.559799
+Create Date: 2024-11-04 14:17:16.929434
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '31a6b68671f0'
+revision: str = '3617b232bb26'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -23,7 +23,7 @@ def upgrade() -> None:
     op.create_table('admin',
     sa.Column('username', sa.String(), nullable=False),
     sa.Column('password', sa.String(), nullable=False),
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
@@ -31,25 +31,6 @@ def upgrade() -> None:
     sa.UniqueConstraint('username')
     )
     op.create_index(op.f('ix_admin_id'), 'admin', ['id'], unique=False)
-    op.create_table('coffee',
-    sa.Column('username', sa.String(), nullable=False),
-    sa.Column('origin', sa.String(), nullable=True),
-    sa.Column('flavor_profile', sa.String(), nullable=True),
-    sa.Column('bean_type', sa.String(), nullable=True),
-    sa.Column('price', sa.Float(), nullable=True),
-    sa.Column('weight', sa.Integer(), nullable=True),
-    sa.Column('stock', sa.Integer(), nullable=True),
-    sa.Column('is_available', sa.Boolean(), nullable=True),
-    sa.Column('harvest_date', sa.Date(), nullable=True),
-    sa.Column('rating', sa.Float(), nullable=True),
-    sa.Column('reviews_count', sa.Integer(), nullable=True),
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('is_active', sa.Boolean(), nullable=True),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_coffee_id'), 'coffee', ['id'], unique=False)
     op.create_table('company',
     sa.Column('username', sa.String(), nullable=False),
     sa.Column('password', sa.String(), nullable=True),
@@ -57,7 +38,7 @@ def upgrade() -> None:
     sa.Column('email', sa.String(), nullable=True),
     sa.Column('owner', sa.String(), nullable=True),
     sa.Column('logo', sa.String(), nullable=True),
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
@@ -73,7 +54,7 @@ def upgrade() -> None:
     sa.Column('password', sa.String(), nullable=True),
     sa.Column('phone', sa.String(), nullable=True),
     sa.Column('image', sa.String(), nullable=True),
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
@@ -89,7 +70,7 @@ def upgrade() -> None:
     sa.Column('longitude', sa.Float(), nullable=True),
     sa.Column('rating', sa.Float(), nullable=True),
     sa.Column('company_id', sa.Integer(), nullable=True),
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
@@ -98,11 +79,9 @@ def upgrade() -> None:
     )
     op.create_index(op.f('ix_cafeteria_id'), 'cafeteria', ['id'], unique=False)
     op.create_table('menu',
-    sa.Column('item_name', sa.String(), nullable=False),
-    sa.Column('price', sa.Float(), nullable=True),
-    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('name', sa.String(), nullable=False),
     sa.Column('cafeteria_id', sa.Integer(), nullable=True),
-    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
@@ -110,11 +89,34 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_menu_id'), 'menu', ['id'], unique=False)
+    op.create_table('coffee',
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('origin', sa.String(), nullable=True),
+    sa.Column('flavor_profile', sa.String(), nullable=True),
+    sa.Column('bean_type', sa.String(), nullable=True),
+    sa.Column('price', sa.Float(), nullable=True),
+    sa.Column('weight', sa.Integer(), nullable=True),
+    sa.Column('stock', sa.Integer(), nullable=True),
+    sa.Column('is_available', sa.Boolean(), nullable=True),
+    sa.Column('harvest_date', sa.Date(), nullable=True),
+    sa.Column('rating', sa.Float(), nullable=True),
+    sa.Column('reviews_count', sa.Integer(), nullable=True),
+    sa.Column('menu_id', sa.Integer(), nullable=True),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.ForeignKeyConstraint(['menu_id'], ['menu.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_coffee_id'), 'coffee', ['id'], unique=False)
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_index(op.f('ix_coffee_id'), table_name='coffee')
+    op.drop_table('coffee')
     op.drop_index(op.f('ix_menu_id'), table_name='menu')
     op.drop_table('menu')
     op.drop_index(op.f('ix_cafeteria_id'), table_name='cafeteria')
@@ -123,8 +125,6 @@ def downgrade() -> None:
     op.drop_table('user')
     op.drop_index(op.f('ix_company_id'), table_name='company')
     op.drop_table('company')
-    op.drop_index(op.f('ix_coffee_id'), table_name='coffee')
-    op.drop_table('coffee')
     op.drop_index(op.f('ix_admin_id'), table_name='admin')
     op.drop_table('admin')
     # ### end Alembic commands ###

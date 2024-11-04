@@ -38,3 +38,10 @@ class CafeteriaResponse(BaseModel):
     username: str
     latitude: float
     longitude: float
+
+class MenuCreate(BaseModel):
+    name: str
+    cafeteria_id: int
+
+class MenuUpdate(MenuCreate):
+    pass

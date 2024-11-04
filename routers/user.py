@@ -33,24 +33,3 @@ async def update_user(pk: int, user_update: UserUpdate, db: Session = Depends(ge
 @router.delete("/")
 async def delete_user(pk: int, db: Session = Depends(get_pg_db)):
     return db_user.delete_user(db, pk)
-
-
-@router.get("/cafeterias/nearby", response_model=List[CafeteriaResponse])
-async def get_nearby_cafeterias(
-        latitude: float,
-        longitude: float,
-        radius: float = 5.0,
-        session = Depends(get_pg_db)
-):
-    result = session.execute(select(Cafeteria))
-    cafeterias = result.scalars().all()
-
-    nearby_cafeterias = [
-        cafeteria for cafeteria in cafeterias
-        if haversine_distance(latitude, longitude, cafeteria.latitude, cafeteria.longitude) <= radius
-    ]
-
-    if not nearby_cafeterias:
-        return []
-
-    return nearby_cafeterias

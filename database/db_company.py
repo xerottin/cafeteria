@@ -10,7 +10,7 @@ from fastapi import Depends, status, HTTPException
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
-def create_company(data:CompanyCreate, db: Session = Depends(get_pg_db)):
+def create_company(data:CompanyCreate, db: Session):
     exist_company = db.query(Company).filter_by(username=data.username).first()
     if exist_company:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
@@ -27,14 +27,14 @@ def create_company(data:CompanyCreate, db: Session = Depends(get_pg_db)):
     return new_company, access_token
 
 
-def get_company(pk: int, db: Session = Depends(get_pg_db)):
+def get_company(pk: int, db: Session):
     company = db.query(Company).filter_by(id=pk).first()
     if company is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")
     return company
 
 
-def edit_company(pk: int, data: CompanyUpdate, db: Session = Depends(get_pg_db)):
+def edit_company(pk: int, data: CompanyUpdate, db: Session):
     company = db.query(Company).filter_by(id=pk).first()
     if company is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")
@@ -47,7 +47,7 @@ def edit_company(pk: int, data: CompanyUpdate, db: Session = Depends(get_pg_db))
     db.refresh(company)
     return company
 
-def delete_company(pk: int, db: Session = Depends(get_pg_db)):
+def delete_company(pk: int, db: Session):
     company = db.query(Company).filter_by(id=pk).first()
     if company is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")

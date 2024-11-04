@@ -5,11 +5,12 @@ from fastapi import HTTPException, status, Depends
 from auth.oauth2 import hash_password, create_access_token
 from database.base import get_pg_db
 from models import User
+from models.cafeteria import Menu
 from schemas.user import UserInDB, UserCreate, UserUpdate
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
-def create_user(data:UserCreate, db: Session = Depends(get_pg_db)):
+def create_user(data:UserCreate, db: Session):
     existing_user = db.query(User).filter(User.username == data.username).first()
     if existing_user:
         raise HTTPException(
@@ -71,3 +72,10 @@ def delete_user(db: Session, pk: int):
     db.commit()
     db.refresh(user)
     return user
+
+
+def get_cafeteria_menu(pk:int, db: Session):
+    menu = db.query(Menu).filter(Menu.id == pk).first()
+    if not menu:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
+    return menu

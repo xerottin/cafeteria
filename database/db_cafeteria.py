@@ -3,7 +3,9 @@ from database.base import get_pg_db
 from models import Cafeteria
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status, Depends
-from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate
+
+from models.cafeteria import Menu
+from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate
 from auth.oauth2 import hash_password, create_access_token
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
@@ -55,3 +57,20 @@ def delete_cafeteria(db: Session, pk: int):
     db.commit()
     db.refresh(cafeteria)
     return cafeteria
+
+def create_menu(data:MenuCreate, db: Session):
+    exist_menu = db.query(Menu).filter_by(name=data.name).first()
+    if exist_menu:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Name already exists")
+
+    new_menu = Menu(name=data.name, cafeteria_id=data.cafeteria_id)
+    db.add(new_menu)
+    db.commit()
+    db.refresh(new_menu)
+    return new_menu
+
+def get_menu(pk: int, db: Session):
+    menu = db.query(Menu).filter_by(id=pk).first()
+    if menu is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
+    return menu
