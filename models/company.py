@@ -13,4 +13,4 @@ class Company(BaseModel):
     owner = Column(String)
     logo = Column(String)
 
-    cafeteria = relationship('Cafeteria', back_populates='company')
+    cafeterias = relationship('Cafeteria', back_populates='company')
