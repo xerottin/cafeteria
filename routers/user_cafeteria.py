@@ -1,13 +1,15 @@
 from fastapi import APIRouter, Depends
 
+from database import db_user
 from database.base import get_pg_db
-from models import Company, Cafeteria
+from models import Cafeteria
 from schemas.cafeteria import CafeteriaResponse
 import math
 from typing import List
 from sqlalchemy import select
 
-router = APIRouter(tags=["user-cofeteria"])
+router = APIRouter(prefix="", tags=["user_cafeteria"])
+
 
 def haversine_distance(lat1, lon1, lat2, lon2):
     R = 6371
@@ -21,10 +23,10 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 
 @router.get("/cafeterias/nearby", response_model=List[CafeteriaResponse])
 async def get_nearby_cafeterias(
-        latitude: float,
-        longitude: float,
-        radius: float = 5.0,
-        session = Depends(get_pg_db)
+    latitude: float,
+    longitude: float,
+    radius: float = 5.0,
+    session = Depends(get_pg_db)
 ):
     result = session.execute(select(Cafeteria))
     cafeterias = result.scalars().all()
@@ -38,3 +40,7 @@ async def get_nearby_cafeterias(
         return []
 
     return nearby_cafeterias
+
+@router.get("/cafeteria/menu")
+async def menu_cafeteria(pk: int, db = Depends(get_pg_db)):
+    return db_user.get_cafeteria_menu(pk, db)
