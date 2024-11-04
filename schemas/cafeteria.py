@@ -45,3 +45,15 @@ class MenuCreate(BaseModel):
 
 class MenuUpdate(MenuCreate):
     pass
+
+
+class CoffeeCreate(BaseModel):
+    name: str
+    origin: str
+    flavor_profile: str
+    bean_type: str
+    weight: int
+    stock: int
+    price: int
+    menu_id: int
+    is_available: bool
