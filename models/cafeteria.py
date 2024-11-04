@@ -2,7 +2,6 @@ from sqlalchemy import Column, String, Integer, ForeignKey, Float, Boolean, Date
 from sqlalchemy.orm import relationship
 from models import BaseModel
 
-
 class Cafeteria(BaseModel):
     __tablename__ = 'cafeteria'
     username = Column(String, nullable=False)
@@ -20,24 +19,13 @@ class Cafeteria(BaseModel):
 
 class Menu(BaseModel):
     __tablename__ = 'menu'
-    item_name = Column(String, nullable=False)
-    price = Column(Float)
-    description = Column(String)
-
-    cafeteria_id = Column(Integer, ForeignKey('cafeteria.id'))
-    cafeteria = relationship('Cafeteria', back_populates='menu')
-
-
-class Coffee(BaseModel):
-    __tablename__ = 'coffee'
-    username = Column(String, nullable=False)
+    product = Column(String, nullable=False)
     origin = Column(String)
-    flavor_profile = Column(String)
-    bean_type = Column(String)
-    price = Column(Float)
-    weight = Column(Integer)
-    stock = Column(Integer)
-    is_available = Column(Boolean, default=True)
-    harvest_date = Column(Date)
+    flavor_profile = Column(String) #вкус
+    bean_type = Column(String) # вид кофе
+    stock = Column(Integer) #количество
+    price = Column(Integer)
     rating = Column(Float)
-    reviews_count = Column(Integer)
+    cafeteria_id = Column(Integer, ForeignKey('cafeteria.id'))
+
+    cafeteria = relationship('Cafeteria', back_populates='menu')

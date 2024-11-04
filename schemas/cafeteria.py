@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -23,14 +24,14 @@ class CafeteriaCreate(CafeteriaBase):
 
 
 class CafeteriaUpdate(CafeteriaBase):
-    username: str | None = None
-    password: str | None = None
-    phone: str | None = None
-    url: str | None = None
-    latitude: str | None = None
-    longitude: str | None = None
-    logo: str | None = None
-    company_id: int | None = None
+    username: Optional[str] = None
+    password: Optional[str] = None
+    phone: Optional[str] = None
+    url: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    logo: Optional[str] = None
+    company_id: Optional[int] = None
 
 class CafeteriaResponse(BaseModel):
     id: int

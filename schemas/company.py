@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
@@ -18,8 +20,8 @@ class CompanyCreate(CompanyBase):
     owner: str
 
 class CompanyUpdate(CompanyBase):
-    password: str | None = None
-    phone: str | None = None
-    email: str | None = None
-    owner: str | None = None
+    password: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    owner: Optional[str] = None
 
