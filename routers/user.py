@@ -20,3 +20,4 @@ async def update_user(pk: int, user_update: UserUpdate, db: Session = Depends(ge
 @router.delete("/")
 async def delete_user(pk: int, db: Session = Depends(get_pg_db)):
     return db_user.delete_user(db, pk)
+
