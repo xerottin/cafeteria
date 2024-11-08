@@ -35,7 +35,7 @@ def get_current_admin(token: str = Depends(oauth2_scheme_admin), db: Session = D
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = extract_token(token)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         exp = payload.get("exp")
         if not username:
