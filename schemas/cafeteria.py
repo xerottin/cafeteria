@@ -20,7 +20,12 @@ class CafeteriaInDB(CafeteriaBase):
     logo: str
 
 class CafeteriaCreate(CafeteriaBase):
-    pass
+    phone: str
+    url: str
+    latitude: float
+    longitude: float
+    logo: str
+    company_id: int
 
 
 class CafeteriaUpdate(CafeteriaBase):

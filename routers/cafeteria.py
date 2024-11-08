@@ -9,12 +9,12 @@ router = APIRouter(prefix="", tags=["cafeteria"])
 
 @router.post("/")
 async def create_cafeteria(data: CafeteriaCreate, db: Session = Depends(get_pg_db)):
-    cafeteria, access_token = db_cafeteria.create_cafeteria(data, db)
+    cafeteria, access_token = db_cafeteria.create_cafeteria(db, data)
     return cafeteria, access_token
 
 @router.get("/")
 async def get_cafeteria(pk: int, db: Session = Depends(get_pg_db)):
-    return db_cafeteria.get_cafeteria(pk, db)
+    return db_cafeteria.get_cafeteria(db, pk)
 
 @router.put("/")
 async def put_cafeteria(pk: int, data: CafeteriaUpdate, db: Session = Depends(get_pg_db)):

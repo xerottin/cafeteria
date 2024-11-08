@@ -1,68 +1,46 @@
-from datetime import timedelta
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, status
 
-from auth.oauth2 import hash_password, create_access_token
-from database.base import get_pg_db
 from models import User
 from models.cafeteria import Menu, Coffee
-from schemas.user import UserInDB, UserCreate, UserUpdate
-from settings import ACCESS_TOKEN_EXPIRE_MINUTES
+from schemas.user import UserCreate, UserUpdate
+from utils.generator import no_bcrypt
 
 
-def create_user(data:UserCreate, db: Session):
-    existing_user = db.query(User).filter(User.username == data.username).first()
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Username already registered"
-        )
-    hashed_password = hash_password(data.password)
-    new_user = User(username=data.username, password=hashed_password)
+def create_user(db: Session, data: UserCreate) -> User:
+    exist_user = db.query(User).filter_by(username=data.username, is_active=True).first()
+    if exist_user:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User already exists')
+    new_user = User(**data.dict())
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"username": data.username}, expires_delta=access_token_expires)
-
-    return UserInDB(
-        id=new_user.id,
-        username=new_user.username,
-        access_token=access_token,
-        token_type="bearer"
-    )
-def get_user(db: Session, pk: int):
+    return new_user
+def get_user_by_id(db: Session, pk: int):
     user = db.query(User).filter_by(id=pk, is_active=True).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
+def get_user_by_username(db: Session, username: str):
+    return db.query(User).filter_by(username=username, is_active=True).first()
 
-def update_user(pk: int, db: Session, user_update: UserUpdate):
-    user = db.query(User).filter(User.id == pk).first()
+def update_user(db: Session, pk: int, data: UserUpdate):
+    if data.username == 'admin':
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Wrong username or password')
+    same_user = db.query(User).filter_by(username=data.username, is_active=True).first()
+    if same_user and same_user.id != pk:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User is already exists")
+    user = db.query(User).filter_by(id=pk, is_active=True).first()
     if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
-    if user_update.username:
-        if user_update.username != user.username:
-            username_taken = db.query(User).filter(User.username == user_update.username).first()
-            if username_taken:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
-        user.username = user_update.username
-
-    if user_update.password:
-        user.hashed_password = hash_password(user_update.password)
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
+    if data.email: user.email = data.email
+    if data.phone: user.phone = data.phone
+    if data.image: user.image = data.image
+    if data.password: user.password = no_bcrypt(data.password)
     db.commit()
     db.refresh(user)
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"username": user.username}, expires_delta=access_token_expires)
-
-    return UserInDB(
-        username=user.username,
-        access_token=access_token,
-        token_type="bearer"
-    )
+    return user
 
 def delete_user(db: Session, pk: int):
     user = db.query(User).filter(User.id == pk).first()
@@ -85,3 +63,8 @@ def get_menu_coffee(pk:int, db: Session):
     if not coffee:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coffee not found")
     return coffee
+def get_user_by_username(username:str, db: Session):
+    user = db.query(User).filter(User.username == username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    return user

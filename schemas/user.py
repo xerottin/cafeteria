@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from pydantic import BaseModel
@@ -20,8 +21,13 @@ class UserCreate(UserBase):
     password: str
 
 class UserUpdate(UserBase):
-    id: int
     password: Optional[str] = None
     email: Optional[str] = None
     phone: Optional[str] = None
     image: Optional[str] = None
+
+
+class CurrentUserScheme(UserUpdate):
+    id: int
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
