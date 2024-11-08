@@ -1,48 +1,43 @@
 from datetime import timedelta
 
-from database.base import get_pg_db
 from models import Company
-from schemas.company import CompanyCreate, CompanyUpdate
+from schemas.company import CompanyCreate, CompanyUpdate, CompanyBase
 from sqlalchemy.orm import Session
-from auth.oauth2 import hash_password, create_access_token
-from fastapi import Depends, status, HTTPException
+from auth.oauth2 import create_access_token
+from fastapi import status, HTTPException
 
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 
 
-def create_company(data:CompanyCreate, db: Session):
-    exist_company = db.query(Company).filter_by(username=data.username).first()
-    if exist_company:
+def create_company(db: Session, data:CompanyCreate):
+    existing_company = db.query(Company).filter_by(username=data.username).first()
+    if existing_company:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
-
-    hashed_password = hash_password(data.password)
-    new_company = Company(username=data.username, password=hashed_password)
+    new_company = Company(
+        username=data.username,
+        password=data.password,
+        phone=data.phone,
+        email=data.email,
+        owner=data.owner
+    )
     db.add(new_company)
     db.commit()
     db.refresh(new_company)
-
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"username": data.username}, expires_delta=access_token_expires)
-
-    return new_company, access_token
+    return new_company
 
 
 def get_company(pk: int, db: Session):
-    company = db.query(Company).filter_by(id=pk).first()
-    if company is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")
-    return company
+    return db.query(Company).filter_by(id=pk, is_active=True).first()
 
 
-def edit_company(pk: int, data: CompanyUpdate, db: Session):
-    company = db.query(Company).filter_by(id=pk).first()
-    if company is None:
+def update_company(db: Session, pk: int, data: CompanyBase):
+    same_company = db.query(Company).filter_by(username=data.username).first()
+    if same_company and same_company.id != pk:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Company already exists")
+    company = db.query(Company).filter_by(id=pk, is_active=True).first()
+    if not company:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")
-    if data.username: company.username = data.username
-    if data.password: company.password = data.password
-    if data.phone: company.phone = data.phone
-    if data.email: company.email = data.email
-    if data.owner: company.owner = data.owner
+    company.username = data.username
     db.commit()
     db.refresh(company)
     return company

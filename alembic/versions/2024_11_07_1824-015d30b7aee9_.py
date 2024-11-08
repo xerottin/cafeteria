@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 3617b232bb26
+Revision ID: 015d30b7aee9
 Revises: 
-Create Date: 2024-11-04 14:17:16.929434
+Create Date: 2024-11-07 18:24:44.759230
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '3617b232bb26'
+revision: str = '015d30b7aee9'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -94,13 +94,11 @@ def upgrade() -> None:
     sa.Column('origin', sa.String(), nullable=True),
     sa.Column('flavor_profile', sa.String(), nullable=True),
     sa.Column('bean_type', sa.String(), nullable=True),
-    sa.Column('price', sa.Float(), nullable=True),
+    sa.Column('price', sa.Integer(), nullable=True),
     sa.Column('weight', sa.Integer(), nullable=True),
     sa.Column('stock', sa.Integer(), nullable=True),
     sa.Column('is_available', sa.Boolean(), nullable=True),
-    sa.Column('harvest_date', sa.Date(), nullable=True),
     sa.Column('rating', sa.Float(), nullable=True),
-    sa.Column('reviews_count', sa.Integer(), nullable=True),
     sa.Column('menu_id', sa.Integer(), nullable=True),
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),

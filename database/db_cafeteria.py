@@ -6,32 +6,36 @@ from fastapi import HTTPException, status, Depends
 
 from models.cafeteria import Menu, Coffee
 from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate, CoffeeCreate
-from auth.oauth2 import hash_password, create_access_token
+from auth.oauth2 import create_access_token
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
+from utils.generator import no_bcrypt
 
 
-def create_cafeteria(data: CafeteriaCreate, db: Session = Depends(get_pg_db)):
+def get_client(db: Session, pk: int):
+    return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
+
+
+def create_cafeteria(db: Session, data: CafeteriaCreate):
     exist_cafeteria = db.query(Cafeteria).filter_by(username=data.username).first()
     if exist_cafeteria:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
-
-    hashed_password = hash_password(data.password)
-    new_cafeteria = Cafeteria(username=data.username, password=hashed_password)
+    new_cafeteria = Cafeteria(
+        username=data.username,
+        password=no_bcrypt(data.password),
+        url=data.url,
+        latitude=data.latitude,
+        longitude=data.longitude,
+        logo=data.logo,
+        company_id=data.company_id,
+    )
     db.add(new_cafeteria)
     db.commit()
     db.refresh(new_cafeteria)
-
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"username": data.username}, expires_delta=access_token_expires)
-
-    return new_cafeteria, access_token
+    return new_cafeteria
 
 
-def get_cafeteria(pk: int, db: Session):
-    cafeteria = db.query(Cafeteria).filter_by(id=pk).first()
-    if cafeteria is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
-    return cafeteria
+def get_cafeteria(db: Session, pk: int):
+    return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
 
 def edit_cafeteria(db: Session, pk: int, data: CafeteriaUpdate ):
     cafeteria = db.query(Cafeteria).filter_by(id=pk).first()
@@ -85,3 +89,4 @@ def create_coffee(data: CoffeeCreate, db: Session):
     db.commit()
     db.refresh(new_coffee)
     return new_coffee
+

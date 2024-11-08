@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Security
 from sqlalchemy.orm import Session
 
+from auth.oauth2 import get_current_admin
 from database import db_company
 from database.base import get_pg_db
 from schemas.company import CompanyCreate, CompanyUpdate
@@ -9,9 +10,9 @@ router = APIRouter(prefix="/company", tags=["company"])
 
 
 @router.post("/")
-async def create_company(data: CompanyCreate, db: Session = Depends(get_pg_db)):
-    client, access_token = db_company.create_company(data, db)
-    return client, access_token
+async def create_company(data: CompanyCreate, db: Session = Depends(get_pg_db),sysadmin=Security(get_current_admin)):
+    company = db_company.create_company(db, data)
+    return company
 
 @router.get("/")
 async def read_company(pk: int, db: Session = Depends(get_pg_db)):
@@ -19,7 +20,7 @@ async def read_company(pk: int, db: Session = Depends(get_pg_db)):
 
 @router.put("/")
 async def update_company(pk: int, data: CompanyUpdate, db: Session = Depends(get_pg_db)):
-    return db_company.edit_company(pk, data, db)
+    return db_company.update_company(db, pk, data)
 
 @router.delete("/")
 def delete_company(pk: int, db: Session = Depends(get_pg_db)):

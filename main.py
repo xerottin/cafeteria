@@ -1,6 +1,9 @@
+import pytz
 from fastapi import FastAPI
 from routers import admin, user, cafeteria, company, user_cafeteria, cafeteria_menu
+from auth.authentication import router as auth_router
 
+uzbekistan_timezone = pytz.timezone('Asia/Tashkent')
 app = FastAPI()
 
 
@@ -9,6 +12,7 @@ app_cafeteria = FastAPI(title="Cafeteria API", version="1")
 app_user = FastAPI(title="User API", version="1")
 
 app.mount("/admin", app_admin)
+app_admin.include_router(auth_router)
 app_admin.include_router(admin.router)
 app_admin.include_router(company.router)
 
