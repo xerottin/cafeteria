@@ -2,12 +2,10 @@ from datetime import timedelta
 from database.base import get_pg_db
 from models import Cafeteria
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status, Depends
+from fastapi import HTTPException, status
 
 from models.cafeteria import Menu, Coffee
 from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate, CoffeeCreate
-from auth.oauth2 import create_access_token
-from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 from utils.generator import no_bcrypt
 
 
@@ -72,6 +70,12 @@ def create_menu(data:MenuCreate, db: Session):
     db.commit()
     db.refresh(new_menu)
     return new_menu
+
+def get_menus(cafeteria_id: int, db: Session):
+    menu = db.query(Menu).filter_by(cafeteria_id=cafeteria_id).all()
+    if menu is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
+    return menu
 
 def get_menu(pk: int, db: Session):
     menu = db.query(Menu).filter_by(id=pk).first()

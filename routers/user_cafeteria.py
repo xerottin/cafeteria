@@ -22,7 +22,7 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 
 
 @router.get("/cafeterias/nearby", response_model=List[CafeteriaResponse])
-async def get_nearby_cafeterias(
+async def nearby_cafeterias(
     latitude: float,
     longitude: float,
     radius: float = 5.0,
@@ -42,9 +42,9 @@ async def get_nearby_cafeterias(
     return nearby_cafeterias
 
 @router.get("/cafeteria/menu")
-async def menu_cafeteria(pk: int, db = Depends(get_pg_db)):
+async def get_menu_cafeteria(pk: int, db = Depends(get_pg_db)):
     return db_user.get_cafeteria_menu(pk, db)
 
 @router.get("/menu/coffee")
-async def menu_coffee(pk: int, db = Depends(get_pg_db)):
+async def get_menu_coffee(pk: int, db = Depends(get_pg_db)):
     return db_user.get_menu_coffee(pk, db)

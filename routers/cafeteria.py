@@ -27,4 +27,4 @@ def delete_cafeteria(pk: int, db: Session = Depends(get_pg_db)):
 
 @router.put("/company")
 async def update_company(pk: int, data: CompanyUpdate, db: Session = Depends(get_pg_db)):
-    return db_company.edit_company(pk, data, db)
+    return db_company.update_company(db, pk, data)
