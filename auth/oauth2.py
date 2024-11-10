@@ -35,7 +35,7 @@ def get_current_admin(token: str = Depends(oauth2_scheme_admin), db: Session = D
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = extract_token(token)
         username: str = payload.get("sub")
         exp = payload.get("exp")
         if not username:
@@ -55,9 +55,7 @@ def get_current_admin(token: str = Depends(oauth2_scheme_admin), db: Session = D
 oauth2_scheme_cafeteria = OAuth2PasswordBearer(tokenUrl="cafeteria_token")
 
 
-def get_current_cafeteria(
-    security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme_cafeteria), db: Session = Depends(get_pg_db)
-):
+def get_current_cafeteria(token: str = Depends(oauth2_scheme_cafeteria), db: Session = Depends(get_pg_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -65,26 +63,21 @@ def get_current_cafeteria(
     )
     try:
         payload = extract_token(token)
+        username: str = payload.get("sub")
         exp = payload.get("exp")
-        cafeteria_id: int = payload.get("cafeteria_id")
-        if not cafeteria_id:
+        if not username:
             raise credentials_exception from None
-        token_scopes = payload.get("scopes", [])
     except (JWTError, ValidationError) as e:
         raise credentials_exception from e
     if exp < int(time.time()):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token expired") from None
-    cafeteria = db_cafeteria.get_client(db, cafeteria_id)
+    cafeteria = db_cafeteria.get_client_username(db, username)
     if not cafeteria:
         raise credentials_exception from None
-    for scope in security_scopes.scopes:
-        if scope not in token_scopes:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not enough permissions") from None
     return cafeteria
 
 
 security_user = HTTPBearer()
-
 
 def get_current_user(token: str = Depends(security_user), db: Session = Depends(get_pg_db)):
     credentials_exception = HTTPException(
@@ -93,7 +86,7 @@ def get_current_user(token: str = Depends(security_user), db: Session = Depends(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token.credentials, SECRET_KEY, algorithms=[ALGORITHM])
         pk: str = payload.get("sub")
         # exp = payload.get("exp")
 

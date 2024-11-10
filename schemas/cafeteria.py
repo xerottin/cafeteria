@@ -24,7 +24,6 @@ class CafeteriaCreate(CafeteriaBase):
     url: str
     latitude: float
     longitude: float
-    logo: str
     company_id: int
 
 

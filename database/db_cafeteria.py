@@ -12,7 +12,8 @@ from utils.generator import no_bcrypt
 def get_client(db: Session, pk: int):
     return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
 
-
+def get_client_username(db: Session, username: str):
+    return db.query(Cafeteria).filter_by(username=username, is_active=True).first()
 def create_cafeteria(db: Session, data: CafeteriaCreate):
     exist_cafeteria = db.query(Cafeteria).filter_by(username=data.username).first()
     if exist_cafeteria:
@@ -23,7 +24,6 @@ def create_cafeteria(db: Session, data: CafeteriaCreate):
         url=data.url,
         latitude=data.latitude,
         longitude=data.longitude,
-        logo=data.logo,
         company_id=data.company_id,
     )
     db.add(new_cafeteria)
