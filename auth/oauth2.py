@@ -77,33 +77,25 @@ def get_current_cafeteria(token: str = Depends(oauth2_scheme_cafeteria), db: Ses
     return cafeteria
 
 
-security_user = HTTPBearer()
+oauth2_scheme_user = OAuth2PasswordBearer(tokenUrl="user_token")
 
-def get_current_user(token: str = Depends(security_user), db: Session = Depends(get_pg_db)):
+def get_current_user(token: str = Depends(oauth2_scheme_user), db: Session = Depends(get_pg_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token.credentials, SECRET_KEY, algorithms=[ALGORITHM])
-        pk: str = payload.get("sub")
-        # exp = payload.get("exp")
-
+        payload = jwt.decode(token)
+        username: str = payload.get("sub")
+        exp = payload.get("exp")
+        if not username:
+            raise credentials_exception from None
     except (JWTError, ValidationError) as e:
         raise credentials_exception from e
-    # if exp < int(time.time()):
-    #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token expired") from None
-    user = db_user.get_user_by_id(db, pk)
+    if exp < int(time.time()):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Token expired") from None
+    user = db_user.get_user_by_username(db, username)
     if not user:
         raise credentials_exception from None
-    user_full_scheme = CurrentUserScheme(
-        id=user.id,
-        username=user.username,
-        image=user.image,
-        email=user.email,
-        phone=user.phone,
-        created_at=user.created_at,
-        updated_at=user.updated_at,
-    )
-    return user_full_scheme
+    return user

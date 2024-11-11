@@ -7,8 +7,7 @@ class AuthResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     username: str | None = None
-    client_id: str | None = None
-    user_type: Literal["admin", "cafeteria"]
+    user_type: Literal["admin", "cafeteria", "user"]
 class AdminBase(BaseModel):
     username: str
     password: str

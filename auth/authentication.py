@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from auth.oauth2 import create_access_token, get_current_cafeteria
 from database.base import get_pg_db
 from database.hash import Hash
-from models import Admin, Cafeteria
+from models import Admin, Cafeteria, User
 from schemas.admin import AuthResponse
 from schemas.cafeteria import CafeteriaInDB
 from settings import USERNAME, PASSWORD
@@ -20,12 +20,14 @@ def get_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depe
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
         access_token = create_access_token(data={"sub": request.username})
         return {
+            "access_token": access_token,
             "token_type": "bearer",
             "username": request.username,
-            "user_type": "admin",
+            "user_type": "admin"
         }
     admin = db.query(Admin).filter_by(username=request.username).first()
     cafeteria = db.query(Cafeteria).filter_by(username=request.username).first()
+    user = db.query(User).filter_by(username=request.username).first()
     if admin:
         if not Hash.verify(admin.password, request.password):
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect password")
@@ -46,6 +48,14 @@ def get_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depe
             "cafeteria_id": cafeteria.id,
             "user_type": "cafeteria",
         }
+    if user and Hash.verify(user.password, request.password):
+        access_token = create_access_token(data={"username": user.username})
+        return AuthResponse(
+            access_token=access_token,
+            token_type="bearer",
+            username=user.username,
+            user_type="user"
+        )
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
 
@@ -71,7 +81,7 @@ def get_admin_token(request: OAuth2PasswordRequestForm = Depends(), db: Session 
         "access_token": access_token,
         "token_type": "bearer",
         "username": request.username,
-        "user_type": "admin",
+        "user_type": "user",
     }
 
 @router.post("/cafeteria_token", response_model=AuthResponse)
@@ -88,6 +98,19 @@ def get_cafeteria_token(request: OAuth2PasswordRequestForm = Depends(), db: Sess
         "username": request.username,
         "user_type": "cafeteria",
     }
+
+@router.post("/user_token", response_model=AuthResponse)
+def get_user_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_pg_db)):
+    user = db.query(User).filter_by(username=request.username).first()
+    if user and Hash.verify(user.password, request.password):
+        access_token = create_access_token(data={"sub": request.username})
+        return AuthResponse(
+            access_token=access_token,
+            token_type="bearer",
+            username=request.username,
+            user_type="user"
+        )
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
 @router.get("/cafeteria_me", response_model=CafeteriaInDB)
 def get_cafeteria_me(cafeteria=Security(get_current_cafeteria)):

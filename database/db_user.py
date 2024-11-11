@@ -1,3 +1,5 @@
+import uuid
+
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
@@ -7,13 +9,13 @@ from schemas.user import UserCreate, UserUpdate
 from utils.generator import no_bcrypt
 
 
-def create_user(db: Session, data: UserCreate) -> User:
-    exist_user = db.query(User).filter_by(username=data.username, is_active=True).first()
+def create_user(db: Session, data: UserCreate):
+    exist_user = db.query(User).filter_by(username=data.username).first()
     if exist_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='User already exists')
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
     new_user = User(
         username=data.username,
-        password=data.password,
+        password=no_bcrypt(data.password)
     )
     db.add(new_user)
     db.commit()
