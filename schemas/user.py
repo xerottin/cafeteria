@@ -9,9 +9,11 @@ class UserBase(BaseModel):
 class UserInDB(BaseModel):
     id: int
     username: str
-    access_token: str
-    token_type: str = "bearer"
-
+    password: str
+    name: str
+    email: str
+    phone: str
+    image: str
 
 class User(UserBase):
     id: int
@@ -21,10 +23,12 @@ class UserCreate(UserBase):
     password: str
 
 class UserUpdate(UserBase):
+    username: Optional[str] | None = None
+    name: Optional[str] | None = None
     password: Optional[str] = None
-    email: Optional[str] = None
-    phone: Optional[str] = None
-    image: Optional[str] = None
+    email: Optional[str]  | None = None
+    phone: Optional[str]  | None = None
+    image: Optional[str]  | None = None
 
 
 class CurrentUserScheme(UserUpdate):
