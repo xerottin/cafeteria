@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 from database import db_user
 from database.base import get_pg_db
@@ -42,9 +43,9 @@ async def nearby_cafeterias(
     return nearby_cafeterias
 
 @router.get("/cafeteria/menu")
-async def get_menu_cafeteria(pk: int, db = Depends(get_pg_db)):
+async def get_menu_cafeteria(pk: int, db: Session = Depends(get_pg_db)):
     return db_user.get_cafeteria_menu(pk, db)
 
 @router.get("/menu/coffee")
-async def get_menu_coffee(pk: int, db = Depends(get_pg_db)):
+async def get_menu_coffee(pk: int, db: Session = Depends(get_pg_db)):
     return db_user.get_menu_coffee(pk, db)

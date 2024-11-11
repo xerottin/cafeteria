@@ -31,3 +31,5 @@ class CurrentUserScheme(UserUpdate):
     id: int
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+
+
