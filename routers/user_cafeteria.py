@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Security
 from sqlalchemy.orm import Session
 
+from auth.oauth2 import get_current_user
 from database import db_user
 from database.base import get_pg_db
 from models import Cafeteria
@@ -27,7 +28,8 @@ async def nearby_cafeterias(
     latitude: float,
     longitude: float,
     radius: float = 5.0,
-    session = Depends(get_pg_db)
+    session = Depends(get_pg_db),
+    user_data=Security(get_current_user)
 ):
     result = session.execute(select(Cafeteria))
     cafeterias = result.scalars().all()
@@ -43,9 +45,9 @@ async def nearby_cafeterias(
     return nearby_cafeterias
 
 @router.get("/cafeteria/menu")
-async def get_menu_cafeteria(pk: int, db: Session = Depends(get_pg_db)):
+async def get_menu_cafeteria(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     return db_user.get_cafeteria_menu(pk, db)
 
 @router.get("/menu/coffee")
-async def get_menu_coffee(pk: int, db: Session = Depends(get_pg_db)):
+async def get_menu_coffee(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     return db_user.get_menu_coffee(pk, db)

@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from typing import Optional
 import time
 from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, SecurityScopes, HTTPBearer
+from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
@@ -10,7 +10,6 @@ from sqlalchemy.orm import Session
 from database import db_admin, db_cafeteria, db_user
 from database.base import get_pg_db
 from schemas.admin import AdminBase
-from schemas.user import CurrentUserScheme
 from settings import SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, USERNAME, PASSWORD
 from utils.generator import extract_token
 
@@ -86,7 +85,7 @@ def get_current_user(token: str = Depends(oauth2_scheme_user), db: Session = Dep
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         exp = payload.get("exp")
         if not username:

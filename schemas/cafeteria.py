@@ -28,14 +28,14 @@ class CafeteriaCreate(CafeteriaBase):
 
 
 class CafeteriaUpdate(CafeteriaBase):
-    username: Optional[str] = None
-    password: Optional[str] = None
-    phone: Optional[str] = None
-    url: Optional[str] = None
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
-    logo: Optional[str] = None
-    company_id: Optional[int] = None
+    username: Optional[str] | None = None
+    password: Optional[str] | None = None
+    phone: Optional[str] | None = None
+    url: Optional[str] | None = None
+    latitude: Optional[float] | None = None
+    longitude: Optional[float] | None = None
+    logo: Optional[str] | None = None
+    company_id: Optional[int] | None = None
 
 class CafeteriaResponse(BaseModel):
     id: int

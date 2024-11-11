@@ -20,8 +20,8 @@ class CompanyCreate(CompanyBase):
     owner: str
 
 class CompanyUpdate(CompanyBase):
-    password: Optional[str] = None
-    phone: Optional[str] = None
-    email: Optional[str] = None
-    owner: Optional[str] = None
+    password: Optional[str] | None = None
+    phone: Optional[str] | None = None
+    email: Optional[str] | None = None
+    owner: Optional[str] | None = None
 
