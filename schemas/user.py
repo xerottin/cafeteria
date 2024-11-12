@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 
@@ -35,5 +35,17 @@ class CurrentUserScheme(UserUpdate):
     id: int
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+
+class OrderItem(BaseModel):
+    id: int
+    coffee_id: int
+    order_id: int
+    quantity: int
+
+class OrderCreate(BaseModel):
+    user_id: int
+    status: bool
+    order_items: List[OrderItem]
+
 
 

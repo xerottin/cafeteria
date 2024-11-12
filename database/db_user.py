@@ -5,7 +5,9 @@ from fastapi import HTTPException, status
 
 from models import User
 from models.cafeteria import Menu, Coffee
-from schemas.user import UserCreate, UserUpdate
+from models.user import Order, OrderItem
+from schemas.cafeteria import CoffeeCreate
+from schemas.user import UserCreate, UserUpdate, OrderCreate
 from utils.generator import no_bcrypt
 
 
@@ -68,3 +70,20 @@ def get_menu_coffee(pk:int, db: Session):
     if not coffee:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coffee not found")
     return coffee
+
+def create_order_user(data: OrderCreate, db: Session, pk:int):
+    new_order = Order(
+        user_id=data.user_id,
+        status=data.status,
+    )
+    for item_data in data.order_items:
+        order_item = OrderItem(
+            coffee_id=item_data.coffee_id,
+            quantity=item_data.quantity
+        )
+        new_order.order_items.append(order_item)  # добавляем к списку order_items заказа
+
+    db.add(new_order)
+    db.commit()
+    db.refresh(new_order)
+    return new_order
