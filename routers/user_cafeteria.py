@@ -10,6 +10,8 @@ import math
 from typing import List
 from sqlalchemy import select
 
+from schemas.user import OrderCreate
+
 router = APIRouter(prefix="", tags=["user_cafeteria"])
 
 
@@ -51,3 +53,9 @@ async def get_menu_cafeteria(pk: int, db: Session = Depends(get_pg_db), user_dat
 @router.get("/menu/coffee")
 async def get_menu_coffee(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     return db_user.get_menu_coffee(pk, db)
+
+
+@router.post("/order")
+async def order_user(data: OrderCreate, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
+    pk = user_data.id
+    return db_user.create_order_user(data, db, pk)
