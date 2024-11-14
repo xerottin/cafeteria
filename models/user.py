@@ -11,7 +11,6 @@ class User(BaseModel):
     phone = Column(String)
     image = Column(String)
 
-    # Связь с заказами
     orders = relationship('Order', back_populates="user")
 
 class Order(BaseModel):
@@ -19,7 +18,6 @@ class Order(BaseModel):
     user_id = Column(Integer, ForeignKey('user.id'))
     status = Column(Boolean, default=True)
 
-    # Связь с пользователем и позициями заказа
     user = relationship("User", back_populates="orders")
     order_items = relationship("OrderItem", back_populates="order")
 
@@ -29,6 +27,5 @@ class OrderItem(BaseModel):
     order_id = Column(Integer, ForeignKey('order.id'))
     quantity = Column(Integer, nullable=False)
 
-    # Связь с заказом и кофе
     order = relationship("Order", back_populates="order_items")
     coffee = relationship("Coffee")
