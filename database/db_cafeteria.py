@@ -5,7 +5,9 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
 from models.cafeteria import Menu, Coffee
+from models.user import Order
 from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate, CoffeeCreate
+from schemas.user import OrderCreate, OrderInDB
 from utils.generator import no_bcrypt
 
 
@@ -94,3 +96,8 @@ def create_coffee(data: CoffeeCreate, db: Session):
     db.refresh(new_coffee)
     return new_coffee
 
+def get_orders(pk, db: Session):
+    orders = db.query(Order).filter_by(cafeteria_id=pk).all()
+    if orders is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    return orders

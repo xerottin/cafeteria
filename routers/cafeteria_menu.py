@@ -5,6 +5,7 @@ from auth.oauth2 import get_current_cafeteria
 from database import db_cafeteria
 from database.base import get_pg_db
 from schemas.cafeteria import MenuCreate, CoffeeCreate
+from schemas.user import OrderInDB
 
 router = APIRouter(prefix="", tags=["xuy"])
 
@@ -24,7 +25,14 @@ async def get_menus(db: Session = Depends(get_pg_db), cafeteria_data=Security(ge
 async def get_menu(pk: int, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
     return db_cafeteria.get_menu(pk, db)
 
+@router.get("/menu/orders")
+async def get_orders(db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
+    pk = cafeteria_data.id
+    return db_cafeteria.get_orders(pk, db)
+
+
 
 @router.post("/coffe")
 async def create_coffe(data:CoffeeCreate, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
     return db_cafeteria.create_coffee(data, db)
+

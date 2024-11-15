@@ -14,6 +14,7 @@ class Cafeteria(BaseModel):
     rating = Column(Float)
     company_id = Column(Integer, ForeignKey('company.id'))
 
+    orders = relationship('Order', back_populates='cafeteria')
     menu = relationship("Menu", back_populates="cafeteria")
     company = relationship('Company', back_populates='cafeterias')
 

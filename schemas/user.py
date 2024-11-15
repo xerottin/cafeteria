@@ -43,9 +43,12 @@ class OrderItem(BaseModel):
     quantity: int
 
 class OrderCreate(BaseModel):
+    cafeteria_id: int
     user_id: int
     status: bool
     order_items: List[OrderItem]
 
-
-
+class OrderInDB(BaseModel):
+    cafeteria_id: int
+    user_id: int
+    status: bool
