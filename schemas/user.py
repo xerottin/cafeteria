@@ -42,7 +42,6 @@ class OrderItem(BaseModel):
 
 class OrderCreate(BaseModel):
     cafeteria_id: int
-    user_id: int
     status: bool
     order_items: List[OrderItem]
 
