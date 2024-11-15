@@ -34,6 +34,11 @@ async def get_orders(db: Session = Depends(get_pg_db), cafeteria_data=Security(g
 async def get_order_user(pk:int, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
     return db_cafeteria.get_order(pk, db)
 
+@router.post("/menu/order/sent")
+async def send_order_user(pk:int, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
+    return db_cafeteria.sent_order(pk, db)
+
+
 @router.post("/coffe")
 async def create_coffe(data:CoffeeCreate, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
     return db_cafeteria.create_coffee(data, db)
