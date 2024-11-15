@@ -107,3 +107,12 @@ def get_order(pk, db: Session):
     if order is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     return order
+
+def sent_order(pk, db: Session):
+    order = db.query(Order).filter_by(id=pk).first()
+    if order is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    order.status = False
+    db.commit()
+    db.refresh(order)
+    return {"message": "order sent successfully", "order_id" : order.id}
