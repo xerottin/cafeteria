@@ -30,8 +30,6 @@ async def get_orders(db: Session = Depends(get_pg_db), cafeteria_data=Security(g
     pk = cafeteria_data.id
     return db_cafeteria.get_orders(pk, db)
 
-
-
 @router.post("/coffe")
 async def create_coffe(data:CoffeeCreate, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
     return db_cafeteria.create_coffee(data, db)
