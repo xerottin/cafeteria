@@ -101,3 +101,9 @@ def get_orders(pk, db: Session):
     if orders is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     return orders
+
+def get_order(pk, db: Session):
+    order = db.query(Order).filter_by(id=pk).first()
+    if order is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
+    return order

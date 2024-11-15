@@ -37,9 +37,7 @@ class CurrentUserScheme(UserUpdate):
     updated_at: Optional[datetime]
 
 class OrderItem(BaseModel):
-    id: int
     coffee_id: int
-    order_id: int
     quantity: int
 
 class OrderCreate(BaseModel):

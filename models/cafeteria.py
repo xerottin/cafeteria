@@ -38,7 +38,7 @@ class Coffee(BaseModel):
     weight = Column(Integer)
     stock = Column(Integer)
     is_available = Column(Boolean, default=True)
-    rating = Column(Float)
+    rating = Column(Float, default=0.0)
     menu_id = Column(Integer, ForeignKey('menu.id'))
 
     menu = relationship("Menu", back_populates="coffees")

@@ -73,16 +73,16 @@ def get_menu_coffee(pk:int, db: Session):
 
 def create_order_user(data: OrderCreate, db: Session, pk:int):
     new_order = Order(
+        cafeteria_id= data.cafeteria_id,
         user_id=pk,
         status=data.status,
     )
     for item_data in data.order_items:
         order_item = OrderItem(
             coffee_id=item_data.coffee_id,
-            order_id=item_data.order_id,
             quantity=item_data.quantity
         )
-        new_order.order_items.append(order_item)  # добавляем к списку order_items заказа
+        new_order.order_items.append(order_item)
 
     db.add(new_order)
     db.commit()
