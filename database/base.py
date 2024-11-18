@@ -3,7 +3,6 @@ from typing import Iterator
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
-
 from settings import DATABASE_URL
 
 Base = declarative_base()
@@ -26,3 +25,5 @@ def get_pg_db() -> Iterator[Session]:
         yield db
     finally:
         db.close()
+
+

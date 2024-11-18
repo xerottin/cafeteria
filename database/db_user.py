@@ -1,4 +1,4 @@
-import uuid
+import json
 
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
@@ -6,7 +6,6 @@ from fastapi import HTTPException, status
 from models import User
 from models.cafeteria import Menu, Coffee
 from models.user import Order, OrderItem
-from schemas.cafeteria import CoffeeCreate
 from schemas.user import UserCreate, UserUpdate, OrderCreate
 from utils.generator import no_bcrypt
 
@@ -88,3 +87,5 @@ def create_order_user(data: OrderCreate, db: Session, pk:int):
     db.commit()
     db.refresh(new_order)
     return new_order
+
+
