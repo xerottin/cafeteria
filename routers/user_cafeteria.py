@@ -60,12 +60,10 @@ async def order_user(data: OrderCreate, db: Session = Depends(get_pg_db), user_d
     pk = user_data.id
     return db_user.create_order_user(data, db, pk)
 
-@router.get("/archive")
-async def archive_user(order_id: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
-    return db_user.archive_order(order_id, db)
-
 
 @router.get("/archive/me")
 async def archive_me(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     user_id = user_data.id
     return db_user.get_user_archive(user_id, db)
+
+
