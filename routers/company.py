@@ -10,9 +10,11 @@ router = APIRouter(prefix="/company", tags=["company"])
 
 
 @router.post("/")
-async def create_company(data: CompanyCreate, db: Session = Depends(get_pg_db),
-                         # sysadmin=Security(get_current_admin)
-    ):
+async def create_company(
+    data: CompanyCreate,
+    db: Session = Depends(get_pg_db),
+    # sysadmin=Security(get_current_admin)
+):
     company = db_company.create_company(db, data)
     return company
 
