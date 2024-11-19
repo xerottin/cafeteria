@@ -17,7 +17,11 @@ def create_user(db: Session, data: UserCreate):
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
     new_user = User(
         username=data.username,
-        password=no_bcrypt(data.password)
+        name=data.name,
+        password=no_bcrypt(data.password),
+        email=data.email,
+        phone=data.phone,
+        image=data.image
     )
     db.add(new_user)
     db.commit()
@@ -41,10 +45,12 @@ def update_user(db: Session, pk: int, data: UserUpdate):
     user = db.query(User).filter_by(id=pk, is_active=True).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
+    if data.username: user.username = data.username
+    if data.name: user.name = data.name
+    if data.password: user.password = no_bcrypt(data.password)
     if data.email: user.email = data.email
     if data.phone: user.phone = data.phone
     if data.image: user.image = data.image
-    if data.password: user.password = no_bcrypt(data.password)
     db.commit()
     db.refresh(user)
     return user
@@ -59,8 +65,8 @@ def delete_user(db: Session, pk: int):
     return user
 
 
-def get_cafeteria_menu(pk:int, db: Session):
-    menu = db.query(Menu).filter(Menu.id == pk).first()
+def get_cafeteria_menus(pk:int, db: Session):
+    menu = db.query(Menu).filter(Menu.cafeteria_id == pk).all()
     if not menu:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
     return menu
@@ -74,6 +80,7 @@ def get_menu_coffee(pk:int, db: Session):
 def create_order_user(data: OrderCreate, db: Session, pk:int):
     new_order = Order(
         cafeteria_id= data.cafeteria_id,
+
         user_id=pk,
         status=data.status,
     )

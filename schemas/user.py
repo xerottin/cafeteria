@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import Optional, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
+
 
 class UserBase(BaseModel):
     username: str
@@ -9,20 +10,20 @@ class UserBase(BaseModel):
 class UserInDB(BaseModel):
     id: int
     username: str
-    password: str
     name: str
+    password: str
     email: str
     phone: str
     image: str
 
-class User(UserBase):
-    id: int
-    hashed_password: str
-
 class UserCreate(UserBase):
+    name: str
     password: str
+    email: str
+    phone: str
+    image: str
 
-class UserUpdate(UserBase):
+class UserUpdate(BaseModel):
     username: Optional[str] | None = None
     name: Optional[str] | None = None
     password: Optional[str] = None
@@ -30,6 +31,9 @@ class UserUpdate(UserBase):
     phone: Optional[str]  | None = None
     image: Optional[str]  | None = None
 
+    @validator("*", pre=True, always=True)
+    def ignore_default_string(cls, v):
+        return v if v not in (None, "string") else None
 
 class CurrentUserScheme(UserUpdate):
     id: int

@@ -46,9 +46,9 @@ async def nearby_cafeterias(
 
     return nearby_cafeterias
 
-@router.get("/cafeteria/menu")
-async def get_menu_cafeteria(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
-    return db_user.get_cafeteria_menu(pk, db)
+@router.get("/cafeteria")
+async def get_cafeteria(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
+    return db_user.get_cafeteria_menus(pk, db)
 
 @router.get("/menu/coffee")
 async def get_menu_coffee(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):

@@ -5,8 +5,8 @@ from models import BaseModel
 class User(BaseModel):
     __tablename__ = 'user'
     username = Column(String, unique=True)
-    password = Column(String, nullable=False)
     name = Column(String)
+    password = Column(String, nullable=False)
     email = Column(String, unique=True)
     phone = Column(String)
     image = Column(String)
