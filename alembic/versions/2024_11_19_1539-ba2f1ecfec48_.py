@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: da19e9d827b3
+Revision ID: ba2f1ecfec48
 Revises: 
-Create Date: 2024-11-12 23:45:42.237219
+Create Date: 2024-11-19 15:39:14.224496
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'da19e9d827b3'
+revision: str = 'ba2f1ecfec48'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -50,8 +50,8 @@ def upgrade() -> None:
     op.create_table('user',
     sa.Column('username', sa.String(), nullable=True),
     sa.Column('password', sa.String(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
-    sa.Column('email', sa.String(), nullable=False),
+    sa.Column('name', sa.String(), nullable=True),
+    sa.Column('email', sa.String(), nullable=True),
     sa.Column('phone', sa.String(), nullable=True),
     sa.Column('image', sa.String(), nullable=True),
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
@@ -80,17 +80,6 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_cafeteria_id'), 'cafeteria', ['id'], unique=False)
-    op.create_table('order',
-    sa.Column('user_id', sa.Integer(), nullable=True),
-    sa.Column('status', sa.Boolean(), nullable=True),
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('created_at', sa.DateTime(), nullable=True),
-    sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('is_active', sa.Boolean(), nullable=True),
-    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_order_id'), 'order', ['id'], unique=False)
     op.create_table('menu',
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('cafeteria_id', sa.Integer(), nullable=True),
@@ -102,6 +91,19 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_menu_id'), 'menu', ['id'], unique=False)
+    op.create_table('order',
+    sa.Column('cafeteria_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('status', sa.Boolean(), nullable=True),
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
+    sa.Column('updated_at', sa.DateTime(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.ForeignKeyConstraint(['cafeteria_id'], ['cafeteria.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_index(op.f('ix_order_id'), 'order', ['id'], unique=False)
     op.create_table('coffee',
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('origin', sa.String(), nullable=True),
@@ -143,10 +145,10 @@ def downgrade() -> None:
     op.drop_table('order_item')
     op.drop_index(op.f('ix_coffee_id'), table_name='coffee')
     op.drop_table('coffee')
-    op.drop_index(op.f('ix_menu_id'), table_name='menu')
-    op.drop_table('menu')
     op.drop_index(op.f('ix_order_id'), table_name='order')
     op.drop_table('order')
+    op.drop_index(op.f('ix_menu_id'), table_name='menu')
+    op.drop_table('menu')
     op.drop_index(op.f('ix_cafeteria_id'), table_name='cafeteria')
     op.drop_table('cafeteria')
     op.drop_index(op.f('ix_user_id'), table_name='user')

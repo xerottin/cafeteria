@@ -24,6 +24,7 @@ def create_cafeteria(db: Session, data: CafeteriaCreate):
         username=data.username,
         password=no_bcrypt(data.password),
         url=data.url,
+        phone=data.phone,
         latitude=data.latitude,
         longitude=data.longitude,
         company_id=data.company_id,
@@ -38,12 +39,12 @@ def get_cafeterias(db: Session, pk: int):
 def get_cafeteria(db: Session, pk: int):
     return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
 
-def edit_cafeteria(db: Session, pk: int, data: CafeteriaUpdate ):
+def update_cafeteria(db: Session, pk: int, data: CafeteriaUpdate ):
     cafeteria = db.query(Cafeteria).filter_by(id=pk).first()
     if cafeteria is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
     if data.username:  cafeteria.username = data.username
-    if data.password:  cafeteria.password = data.password
+    if data.password:  cafeteria.password = no_bcrypt(data.password)
     if data.phone:  cafeteria.phone = data.phone
     if data.url: cafeteria.url = data.url
     if data.latitude: cafeteria.latitude = data.latitude

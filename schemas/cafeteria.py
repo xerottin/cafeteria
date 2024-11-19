@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class CafeteriaBase(BaseModel):
@@ -20,8 +20,8 @@ class CafeteriaInDB(CafeteriaBase):
     logo: str
 
 class CafeteriaCreate(CafeteriaBase):
-    phone: str
     url: str
+    phone: str
     latitude: float
     longitude: float
     company_id: int
@@ -36,6 +36,11 @@ class CafeteriaUpdate(CafeteriaBase):
     longitude: Optional[float] | None = None
     logo: Optional[str] | None = None
     company_id: Optional[int] | None = None
+
+    @validator("*", pre=True, always=True)
+    def ignore_default_string(cls, v):
+        return v if v not in (None, "string") else None
+
 
 class CafeteriaResponse(BaseModel):
     id: int
