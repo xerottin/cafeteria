@@ -3,6 +3,7 @@ import json
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
+from database.base import redis_client
 from models import User
 from models.cafeteria import Menu, Coffee
 from models.user import Order, OrderItem

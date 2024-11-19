@@ -1,4 +1,6 @@
 import json
+
+from database.base import redis_client
 from models import Cafeteria
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
