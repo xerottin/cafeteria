@@ -1,5 +1,7 @@
 import os
 from logging.config import fileConfig
+
+import redis
 from dotenv import load_dotenv, find_dotenv
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
@@ -81,3 +83,10 @@ if context.is_offline_mode():
     run_migrations_offline()
 else:
     run_migrations_online()
+
+
+redis_client = redis.Redis(
+    host=os.getenv("REDIS_HOST", "localhost"),
+    port=int(os.getenv("REDIS_PORT", 6379)),
+    decode_responses=True
+)

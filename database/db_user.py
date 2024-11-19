@@ -1,12 +1,12 @@
-import uuid
+import json
 
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
+from database.base import redis_client
 from models import User
 from models.cafeteria import Menu, Coffee
 from models.user import Order, OrderItem
-from schemas.cafeteria import CoffeeCreate
 from schemas.user import UserCreate, UserUpdate, OrderCreate
 from utils.generator import no_bcrypt
 
@@ -88,3 +88,8 @@ def create_order_user(data: OrderCreate, db: Session, pk:int):
     db.commit()
     db.refresh(new_order)
     return new_order
+
+def get_user_archive(user_id: int, db: Session):
+    archive = redis_client.lrange(f"user:{user_id}:archives", 0, -1)
+    return [json.loads(order) for order in archive]
+

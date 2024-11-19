@@ -1,5 +1,6 @@
+import json
 from datetime import timedelta
-from database.base import get_pg_db
+from database.base import get_pg_db, redis_client
 from models import Cafeteria
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
@@ -113,6 +114,18 @@ def sent_order(pk, db: Session):
     if order is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     order.status = False
-    db.commit()
-    db.refresh(order)
+    order_data = {
+        "order_id": order.id,
+        "cafeteria_id": order.cafeteria_id,
+        "user_id": order.user_id,
+        "status": order.status,
+        "order_items": [{"coffee_id": item.coffee_id, "quantity": item.quantity} for item in order.order_items],
+    }
+    try:
+        redis_client.rpush(f"user:{order.user_id}:archives", json.dumps(order_data))
+        db.commit()
+        db.refresh(order)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to process order: {str(e)}")
     return {"message": "order sent successfully", "order_id" : order.id}
