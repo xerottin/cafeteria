@@ -1,6 +1,4 @@
 import json
-from datetime import timedelta
-from database.base import get_pg_db, redis_client
 from models import Cafeteria
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
@@ -8,7 +6,6 @@ from fastapi import HTTPException, status
 from models.cafeteria import Menu, Coffee
 from models.user import Order
 from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate, CoffeeCreate
-from schemas.user import OrderCreate, OrderInDB
 from utils.generator import no_bcrypt
 
 
