@@ -1,7 +1,6 @@
-from fastapi import APIRouter, Depends, Security
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from auth.oauth2 import get_current_admin
 from database import db_company
 from database.base import get_pg_db
 from schemas.company import CompanyCreate, CompanyUpdate

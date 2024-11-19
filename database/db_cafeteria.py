@@ -34,7 +34,8 @@ def create_cafeteria(db: Session, data: CafeteriaCreate):
     db.refresh(new_cafeteria)
     return new_cafeteria
 
-
+def get_cafeterias(db: Session, pk: int):
+    return db.query(Cafeteria).filter_by(company_id=pk, is_active=True).all()
 def get_cafeteria(db: Session, pk: int):
     return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
 

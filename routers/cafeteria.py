@@ -13,6 +13,11 @@ router = APIRouter(prefix="", tags=["cafeteria"])
 async def create_cafeteria(data: CafeteriaCreate, db: Session = Depends(get_pg_db)):
     return db_cafeteria.create_cafeteria(db, data)
 
+
+@router.get("/cafeterias")
+async def get_cafeterias(db: Session = Depends(get_pg_db), cafeteria_data = Security(get_current_cafeteria)):
+    pk = cafeteria_data.company_id
+    return db_cafeteria.get_cafeterias(db, pk)
 @router.get("/")
 async def get_cafeteria(db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
     pk = cafeteria_data.id
