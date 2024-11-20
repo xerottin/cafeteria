@@ -78,7 +78,6 @@ def get_menu_coffee(pk:int, db: Session):
     return coffee
 
 
-
 def create_order_user(data: OrderCreate, db: Session, pk: int):
     new_order = Order(
         cafeteria_id=data.cafeteria_id,
