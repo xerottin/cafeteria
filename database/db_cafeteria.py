@@ -8,7 +8,7 @@ from fastapi import HTTPException, status
 from models.cafeteria import Menu, Coffee
 from models.user import Order
 from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate, CoffeeCreate
-from utils.generator import no_bcrypt
+from utils.generator import no_bcrypt, update_model
 
 
 def get_client(db: Session, pk: int):
@@ -16,6 +16,8 @@ def get_client(db: Session, pk: int):
 
 def get_client_username(db: Session, username: str):
     return db.query(Cafeteria).filter_by(username=username, is_active=True).first()
+
+
 def create_cafeteria(db: Session, data: CafeteriaCreate):
     exist_cafeteria = db.query(Cafeteria).filter_by(username=data.username).first()
     if exist_cafeteria:
@@ -39,18 +41,19 @@ def get_cafeterias(db: Session, pk: int):
 def get_cafeteria(db: Session, pk: int):
     return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
 
-def update_cafeteria(db: Session, pk: int, data: CafeteriaUpdate ):
+def update_cafeteria(db: Session, pk: int, data: CafeteriaUpdate):
     cafeteria = db.query(Cafeteria).filter_by(id=pk).first()
     if cafeteria is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Client not found")
-    if data.username:  cafeteria.username = data.username
-    if data.password:  cafeteria.password = no_bcrypt(data.password)
-    if data.phone:  cafeteria.phone = data.phone
-    if data.url: cafeteria.url = data.url
-    if data.latitude: cafeteria.latitude = data.latitude
-    if data.longitude: cafeteria.longitude = data.longitude
-    if data.logo: cafeteria.logo = data.logo
-    if data.company_id: cafeteria.company_id = data.company_id
+    fields_mapping = {
+        "username": "username",
+        "password": "password",
+        "phone": "phone",
+        "url": "url",
+        "latitude": "latitude",
+        "longitude": "longitude",
+    }
+    update_model(data, cafeteria, fields_mapping)
     db.commit()
     db.refresh(cafeteria)
     return cafeteria
