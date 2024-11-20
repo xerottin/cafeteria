@@ -1,7 +1,5 @@
-import asyncio
 import json
 
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
@@ -9,7 +7,6 @@ from database.base import redis_client
 from models import User
 from models.cafeteria import Menu, Coffee
 from models.user import Order, OrderItem, Favorite
-from routers.websocket import active_connections
 from schemas.user import UserCreate, UserUpdate, OrderCreate
 from utils.generator import no_bcrypt
 
@@ -80,10 +77,6 @@ def get_menu_coffee(pk:int, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coffee not found")
     return coffee
 
-async def notify_cafeteria(notification_message: dict, cafeteria_id: int):
-    if cafeteria_id in active_connections:
-        for websocket in active_connections[cafeteria_id]:
-            await websocket.send_json(notification_message)
 
 
 def create_order_user(data: OrderCreate, db: Session, pk: int):
@@ -106,18 +99,6 @@ def create_order_user(data: OrderCreate, db: Session, pk: int):
     except Exception as e:
         db.rollback()
         raise e
-
-    notification_message = {
-        "order_id": new_order.id,
-        "user_id": new_order.user_id,
-        "status": new_order.status,
-        "order_items": [
-            {"coffee_id": item.coffee_id, "quantity": item.quantity}
-            for item in new_order.order_items
-        ]
-    }
-
-    asyncio.create_task(notify_cafeteria(notification_message, new_order.cafeteria_id))
 
     return new_order
 
