@@ -42,3 +42,5 @@ class Coffee(BaseModel):
     menu_id = Column(Integer, ForeignKey('menu.id'))
 
     menu = relationship("Menu", back_populates="coffees")
+    favorites = relationship("Favorite", back_populates="coffee")
+

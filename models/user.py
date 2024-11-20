@@ -12,6 +12,8 @@ class User(BaseModel):
     image = Column(String)
 
     orders = relationship('Order', back_populates="user")
+    favorites = relationship("Favorite", back_populates="user")
+
 
 class Order(BaseModel):
     __tablename__ = 'order'
@@ -31,3 +33,13 @@ class OrderItem(BaseModel):
 
     order = relationship("Order", back_populates="order_items")
     coffee = relationship("Coffee")
+
+class Favorite(BaseModel):
+    __tablename__ = 'favorite'
+    user_id = Column(Integer, ForeignKey('user.id'))
+    coffee_id = Column(Integer, ForeignKey('coffee.id'))
+
+    user = relationship("User", back_populates="favorites")
+    coffee = relationship("Coffee", back_populates="favorites")
+
+

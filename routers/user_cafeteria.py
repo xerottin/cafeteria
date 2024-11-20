@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from auth.oauth2 import get_current_user
 from database import db_user
 from database.base import get_pg_db
+from database.db_user import create_fav
 from models import Cafeteria
+from models.user import Favorite
 from schemas.cafeteria import CafeteriaResponse
 import math
 from typing import List
@@ -65,5 +67,12 @@ async def order_user(data: OrderCreate, db: Session = Depends(get_pg_db), user_d
 async def archive_me(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     user_id = user_data.id
     return db_user.get_user_archive(user_id, db)
+
+
+@router.post("/favorite")
+def fav(coffee_id: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
+    user_id = user_data.id
+    return db_user.create_fav(user_id, coffee_id, db)
+
 
 

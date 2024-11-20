@@ -53,3 +53,8 @@ class OrderInDB(BaseModel):
     cafeteria_id: int
     user_id: int
     status: bool
+
+
+class FavoriteSchemas(BaseModel):
+    user_id: int
+    coffee_id: int
