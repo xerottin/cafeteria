@@ -1,5 +1,4 @@
 from fastapi import WebSocket, WebSocketDisconnect, APIRouter
-
 router = APIRouter(prefix="", tags=["websocket"])
 
 active_connections = {}

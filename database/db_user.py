@@ -80,12 +80,11 @@ def get_menu_coffee(pk:int, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coffee not found")
     return coffee
 
-async def notify_cafeteria(cafeteria_id: int):
-    message = "You have new order"
+async def notify_cafeteria(notification_message: dict, cafeteria_id: int):
     if cafeteria_id in active_connections:
-        message = jsonable_encoder(message)
         for websocket in active_connections[cafeteria_id]:
-            await websocket.send_json(message)
+            await websocket.send_json(notification_message)
+
 
 def create_order_user(data: OrderCreate, db: Session, pk: int):
     new_order = Order(
@@ -93,16 +92,20 @@ def create_order_user(data: OrderCreate, db: Session, pk: int):
         user_id=pk,
         status=data.status,
     )
-    for item_data in data.order_items:
-        order_item = OrderItem(
-            coffee_id=item_data.coffee_id,
-            quantity=item_data.quantity
-        )
-        new_order.order_items.append(order_item)
+    try:
+        for item_data in data.order_items:
+            order_item = OrderItem(
+                coffee_id=item_data.coffee_id,
+                quantity=item_data.quantity
+            )
+            new_order.order_items.append(order_item)
 
-    db.add(new_order)
-    db.commit()
-    db.refresh(new_order)
+        db.add(new_order)
+        db.commit()
+        db.refresh(new_order)
+    except Exception as e:
+        db.rollback()
+        raise e
 
     notification_message = {
         "order_id": new_order.id,
@@ -110,13 +113,14 @@ def create_order_user(data: OrderCreate, db: Session, pk: int):
         "status": new_order.status,
         "order_items": [
             {"coffee_id": item.coffee_id, "quantity": item.quantity}
-            for item in data.order_items
+            for item in new_order.order_items
         ]
     }
 
-    asyncio.create_task(notify_cafeteria(new_order.cafeteria_id, notification_message))
+    asyncio.create_task(notify_cafeteria(notification_message, new_order.cafeteria_id))
 
     return new_order
+
 
 def get_user_archive(user_id: int, db: Session):
     archive = redis_client.lrange(f"user:{user_id}:archives", 0, -1)
