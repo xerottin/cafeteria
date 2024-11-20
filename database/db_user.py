@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 from database.base import redis_client
 from models import User
 from models.cafeteria import Menu, Coffee
-from models.user import Order, OrderItem
+from models.user import Order, OrderItem, Favorite
 from schemas.user import UserCreate, UserUpdate, OrderCreate
 from utils.generator import no_bcrypt
 
@@ -100,3 +100,13 @@ def get_user_archive(user_id: int, db: Session):
     archive = redis_client.lrange(f"user:{user_id}:archives", 0, -1)
     return [json.loads(order) for order in archive]
 
+
+def create_fav(user_id: int, coffee_id: int, db: Session):
+    new_fav = Favorite(
+        user_id=user_id,
+        coffee_id=coffee_id
+    )
+    db.add(new_fav)
+    db.commit()
+    db.refresh(new_fav)
+    return new_fav
