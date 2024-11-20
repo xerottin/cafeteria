@@ -36,3 +36,4 @@ def update_model(data, model, fields_mapping):
             if data_field == "password":
                 value = no_bcrypt(value)
             setattr(model, model_field, value)
+
