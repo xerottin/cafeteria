@@ -1,6 +1,6 @@
 import pytz
 from fastapi import FastAPI
-from routers import admin, user, cafeteria, company, user_cafeteria, cafeteria_menu, websocket
+from routers import admin, user, cafeteria, company, user_cafeteria, cafeteria_menu
 from auth.authentication import router as admin_auth_router
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -9,7 +9,6 @@ app = FastAPI()
 
 
 app.include_router(admin_auth_router)
-app.include_router(websocket.router)
 app_admin = FastAPI(title="Admin API", version="1")
 app_cafeteria = FastAPI(title="Cafeteria API", version="1")
 app_user = FastAPI(title="User API", version="1")

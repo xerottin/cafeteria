@@ -85,20 +85,16 @@ def create_order_user(data: OrderCreate, db: Session, pk: int):
         user_id=pk,
         status=data.status,
     )
-    try:
-        for item_data in data.order_items:
-            order_item = OrderItem(
-                coffee_id=item_data.coffee_id,
-                quantity=item_data.quantity
-            )
-            new_order.order_items.append(order_item)
+    for item_data in data.order_items:
+        order_item = OrderItem(
+            coffee_id=item_data.coffee_id,
+            quantity=item_data.quantity
+        )
+        new_order.order_items.append(order_item)
 
-        db.add(new_order)
-        db.commit()
-        db.refresh(new_order)
-    except Exception as e:
-        db.rollback()
-        raise e
+    db.add(new_order)
+    db.commit()
+    db.refresh(new_order)
 
     return new_order
 
