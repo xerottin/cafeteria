@@ -103,7 +103,7 @@ def get_user_archive(user_id: int, db: Session):
     return [json.loads(order) for order in archive]
 
 
-def create_fav(user_id: int, coffee_id: int, db: Session):
+def create_favourite(user_id: int, coffee_id: int, db: Session):
     new_fav = Favorite(
         user_id=user_id,
         coffee_id=coffee_id
