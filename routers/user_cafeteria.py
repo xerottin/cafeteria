@@ -4,9 +4,7 @@ from sqlalchemy.orm import Session
 from auth.oauth2 import get_current_user
 from database import db_user
 from database.base import get_pg_db
-from database.db_user import create_fav
 from models import Cafeteria
-from models.user import Favorite
 from schemas.cafeteria import CafeteriaResponse
 import math
 from typing import List
@@ -49,7 +47,7 @@ async def nearby_cafeterias(
     return nearby_cafeterias
 
 @router.get("/cafeteria")
-async def get_cafeteria(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
+async def get_cafeteria_menus(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     return db_user.get_cafeteria_menus(pk, db)
 
 @router.get("/menu/coffee")
@@ -58,21 +56,21 @@ async def get_menu_coffee(pk: int, db: Session = Depends(get_pg_db), user_data=S
 
 
 @router.post("/order")
-async def order_user(data: OrderCreate, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
+async def create_order(data: OrderCreate, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     pk = user_data.id
     return db_user.create_order_user(data, db, pk)
 
 
 @router.get("/archive/me")
-async def archive_me(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
+async def my_archive(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     user_id = user_data.id
     return db_user.get_user_archive(user_id, db)
 
 
-@router.post("/favorite")
-def fav(coffee_id: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
+@router.post("/favourite")
+def favourite(coffee_id: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     user_id = user_data.id
-    return db_user.create_fav(user_id, coffee_id, db)
+    return db_user.create_favourite(user_id, coffee_id, db)
 
 
 

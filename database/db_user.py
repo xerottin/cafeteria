@@ -77,10 +77,10 @@ def get_menu_coffee(pk:int, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coffee not found")
     return coffee
 
-def create_order_user(data: OrderCreate, db: Session, pk:int):
-    new_order = Order(
-        cafeteria_id= data.cafeteria_id,
 
+def create_order_user(data: OrderCreate, db: Session, pk: int):
+    new_order = Order(
+        cafeteria_id=data.cafeteria_id,
         user_id=pk,
         status=data.status,
     )
@@ -94,14 +94,16 @@ def create_order_user(data: OrderCreate, db: Session, pk:int):
     db.add(new_order)
     db.commit()
     db.refresh(new_order)
+
     return new_order
+
 
 def get_user_archive(user_id: int, db: Session):
     archive = redis_client.lrange(f"user:{user_id}:archives", 0, -1)
     return [json.loads(order) for order in archive]
 
 
-def create_fav(user_id: int, coffee_id: int, db: Session):
+def create_favourite(user_id: int, coffee_id: int, db: Session):
     new_fav = Favorite(
         user_id=user_id,
         coffee_id=coffee_id

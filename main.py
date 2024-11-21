@@ -2,6 +2,7 @@ import pytz
 from fastapi import FastAPI
 from routers import admin, user, cafeteria, company, user_cafeteria, cafeteria_menu
 from auth.authentication import router as admin_auth_router
+from fastapi.middleware.cors import CORSMiddleware
 
 uzbekistan_timezone = pytz.timezone('Asia/Tashkent')
 app = FastAPI()
@@ -26,3 +27,12 @@ app.mount("/user", app_user)
 app_user.include_router(admin_auth_router)
 app_user.include_router(user.router)
 app_user.include_router(user_cafeteria.router)
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
