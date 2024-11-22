@@ -112,3 +112,10 @@ def create_favourite(user_id: int, coffee_id: int, db: Session):
     db.commit()
     db.refresh(new_fav)
     return new_fav
+
+
+def get_my_fav(user_id: int, db: Session):
+    fav = db.query(Favorite).filter_by(user_id=user_id).all()
+    if not fav:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favourite not found")
+    return fav

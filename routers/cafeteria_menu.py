@@ -7,7 +7,7 @@ from database.base import get_pg_db
 from schemas.cafeteria import MenuCreate, CoffeeCreate
 from schemas.user import OrderInDB
 
-router = APIRouter(prefix="", tags=["xuy"])
+router = APIRouter(prefix="", tags=["cafeteria"])
 
 @router.post("/menu")
 async def create_menu(data:MenuCreate, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):

@@ -72,5 +72,10 @@ def favourite(coffee_id: int, db: Session = Depends(get_pg_db), user_data=Securi
     user_id = user_data.id
     return db_user.create_favourite(user_id, coffee_id, db)
 
+@router.get("favourite")
+async def my_favouirite(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
+    user_id = user_data.id
+    return db_user.get_my_fav(user_id, db)
+
 
 

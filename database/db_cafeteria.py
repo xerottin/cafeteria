@@ -37,7 +37,7 @@ def create_cafeteria(db: Session, data: CafeteriaCreate):
     return new_cafeteria
 
 def get_cafeterias(db: Session, pk: int):
-    return db.query(Cafeteria).filter_by(company_id=pk, is_active=True).all()
+    return db.query(Cafeteria).filter_by(company_id=pk).all()
 def get_cafeteria(db: Session, pk: int):
     return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
 
@@ -102,7 +102,7 @@ def create_coffee(data: CoffeeCreate, db: Session):
     return new_coffee
 
 def get_orders(pk, db: Session):
-    orders = db.query(Order).filter_by(cafeteria_id=pk).all()
+    orders = db.query(Order).filter_by(cafeteria_id=pk, status=True).all()
     if orders is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     return orders
