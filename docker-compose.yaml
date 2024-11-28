@@ -11,8 +11,11 @@ services:
       - DATABASE_URL=postgresql://postgres:1111@db:5432/cafeteria
       - USERNAME=admin
       - PASSWORD=RA2204i
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     depends_on:
       - db
+      - redis
     networks:
       - app-network
 
@@ -26,6 +29,15 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  redis:
+    image: redis:7
+    container_name: coffe_redis
+    restart: always
+    ports:
+      - "6379:6379"
     networks:
       - app-network
 
