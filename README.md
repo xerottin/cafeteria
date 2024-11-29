@@ -1,14 +1,13 @@
-**Cafeteria** is a project for safe your time order coffee
+# ****Cafeteria** is a project for safe your time order coffee**
 
-How run for use in swagger
----
+### How run for use in swagger
 
-- To start, clone the project to your local machine:
+##### - To start, clone the project to your local machine:
+
 ```bash
     git clone https://github.com/xerottin/cafeteria.git
 ```
-Docker
------------
+### Docker
 ```bash
     pip install docker
 ```
@@ -18,8 +17,7 @@ Docker
     docker network create app-network
 ```
 
-Creating and Running the Docker Container
----
+### Creating and Running the Docker Container
 ```bash
     docker compose up --build
 ```
