@@ -1,48 +1,64 @@
 services:
   fastapi:
-    container_name: coffe_fastapi
+    container_name: cafeteria_fastapi
     restart: always
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8011:8009"
-    environment:
-      - DATABASE_URL=postgresql://postgres:1111@db:5432/cafeteria
-      - USERNAME=admin
-      - PASSWORD=RA2204i
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
+      - "8009:8008"
     depends_on:
-      - db
+      - postgresql
       - redis
+    command: bash -c "alembic upgrade head && gunicorn -b 0.0.0.0:8008  -w 50 -t 360 -k uvicorn.workers.UvicornWorker main:app --max-requests 250 --max-requests-jitter 50 --access-logfile -"
+    environment:
+      APP_TITLE: "Cafeteria"
+      POSTGRESS_URL: postgres://admin:admin@postgresql:5432/cafeteria
+
+
+      USERNAME: SakuraMidori
+      PASSWORD: Ramen#1234
+
+      REDIS_URL: redis://redis:6379/0
     networks:
       - app-network
 
-  db:
+  postgresql:
+    container_name: cafeteria_postgresql
+    command: postgres -c 'max_connections=500'
     image: postgres:16
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1111
-      POSTGRES_DB: coffe
+    hostname: postgresql
     ports:
-      - "5432:5432"
+      - "5439:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./db_volume_2:/var/lib/postgresql/data/
+    labels:
+      - "traefik.enable=false"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: cafeteria_db
+      TZ: Asia/Tashkent
     networks:
       - app-network
 
   redis:
-    image: redis:7
-    container_name: coffe_redis
-    restart: always
+    container_name: cafeteria_redis
+    image: "redis:alpine"
+    labels:
+      - "traefik.enable=false"
     ports:
-      - "6379:6379"
+      - "6378:6379"
+    volumes:
+      - cache:/data
+    hostname: redis
+    command: redis-server
     networks:
       - app-network
 
 volumes:
   postgres_data:
+  cache:
 
 networks:
   app-network:
