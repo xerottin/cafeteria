@@ -4,7 +4,7 @@ from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(find_dotenv())
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+POSTGRES_URL = os.getenv("POSTGRES_URL")
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM")
 USERNAME = os.getenv("USERNAME")

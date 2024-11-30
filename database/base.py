@@ -3,13 +3,13 @@ from typing import Iterator
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
-from settings import DATABASE_URL
+from settings import POSTGRES_URL
 import redis
 
 Base = declarative_base()
 
 engine = create_engine(
-    DATABASE_URL,
+    POSTGRES_URL,
     pool_size=20,
     max_overflow=30,
     pool_timeout=60,

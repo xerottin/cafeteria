@@ -10,18 +10,15 @@ services:
     depends_on:
       - postgresql
       - redis
-    command: bash -c "alembic upgrade head && gunicorn -b 0.0.0.0:8008  -w 50 -t 360 -k uvicorn.workers.UvicornWorker main:app --max-requests 250 --max-requests-jitter 50 --access-logfile -"
+    command: bash -c "alembic upgrade head && gunicorn -b 0.0.0.0:8008 -w 4 -t 360 -k uvicorn.workers.UvicornWorker main:app --max-requests 250 --max-requests-jitter 50 --access-logfile -"
     environment:
       APP_TITLE: "Cafeteria"
-      POSTGRESS_URL: postgres://admin:admin@postgresql:5432/cafeteria
-
-
+      POSTGRES_URL: postgresql+psycopg2://admin:admin@postgresql:5432/cafeteria_db
       USERNAME: SakuraMidori
       PASSWORD: Ramen#1234
-
       REDIS_URL: redis://redis:6379/0
     networks:
-      - app-network
+      - cafeteria-network
 
   postgresql:
     container_name: cafeteria_postgresql
@@ -31,7 +28,7 @@ services:
     ports:
       - "5439:5432"
     volumes:
-      - ./db_volume_2:/var/lib/postgresql/data/
+      - ./db_volume:/var/lib/postgresql/data/
     labels:
       - "traefik.enable=false"
     environment:
@@ -40,7 +37,7 @@ services:
       POSTGRES_DB: cafeteria_db
       TZ: Asia/Tashkent
     networks:
-      - app-network
+      - cafeteria-network
 
   redis:
     container_name: cafeteria_redis
@@ -54,12 +51,13 @@ services:
     hostname: redis
     command: redis-server
     networks:
-      - app-network
+      - cafeteria-network
 
 volumes:
   postgres_data:
   cache:
 
 networks:
-  app-network:
+  cafeteria-network:
+    name: cafeteria-network
     external: true

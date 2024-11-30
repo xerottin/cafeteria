@@ -14,3 +14,4 @@ python-jose==3.3.0
 pytz==2024.1
 redis==3.5.3
 python-multipart==0.0.17
+gunicorn==21.2.0

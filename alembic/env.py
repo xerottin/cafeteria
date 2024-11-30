@@ -20,10 +20,10 @@ config = context.config
 
 if config.config_file_name:
     fileConfig(config.config_file_name)
-DATABASE_URL = os.getenv("DATABASE_URL")
+POSTGRES_URL = os.getenv("POSTGRES_URL")
 
 section = config.config_ini_section
-config.set_section_option(section, "DATABASE_URL", DATABASE_URL)
+config.set_section_option(section, "POSTGRES_URL", POSTGRES_URL)
 
 target_metadata = Base.metadata
 
