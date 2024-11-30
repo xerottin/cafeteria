@@ -14,7 +14,7 @@
 
 - Then open docker
 ```bash
-    docker network create app-network
+    docker network create cafeteria-network
 ```
 
 ### Creating and Running the Docker Container
