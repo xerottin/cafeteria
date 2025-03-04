@@ -1,27 +1,46 @@
-# ****Cafeteria** is a project for safe your time order coffee**
+# **Cafeteria** - A Project to Save Your Time Ordering Coffee
 
-### How run for use in swagger
+## Overview
 
-##### - To start, clone the project to your local machine:
+Cafeteria is a backend project designed to streamline and simplify the process of ordering coffee, ensuring a faster and more efficient experience for users.
+
+## Technologies Used
+
+- **FastAPI** - High-performance web framework for building APIs.
+- **WebSockets** - Real-time communication support.
+- **PostgreSQL** - Relational database management system.
+- **Redis** - In-memory data structure store for caching and message brokering.
+- **Docker** - Containerization platform for easy deployment.
+
+## Running the Project Locally
+
+### 1. Clone the Repository
 
 ```bash
     git clone https://github.com/xerottin/cafeteria.git
 ```
-### Docker
+
+### 2. Install Docker
+
+Ensure you have Docker installed. If not, install it using:
+
 ```bash
     pip install docker
 ```
 
-- Then open docker
+### 3. Start Docker and Create a Network
+
 ```bash
     docker network create cafeteria-network
 ```
 
-### Creating and Running the Docker Container
+### 4. Build and Run the Docker Container
+
 ```bash
     docker compose up --build
 ```
 
-Conclusion
----
-Now the project is ready for local development and testing! If needed, be sure to customize the Docker configuration and database parameters for your specific environment.
+## Conclusion
+
+Project is now set up for local development and testing! Feel free to customize the Docker configuration and database settings to suit your needs.
+
