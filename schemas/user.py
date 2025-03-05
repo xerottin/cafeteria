@@ -3,7 +3,6 @@ from typing import Optional, List
 
 from pydantic import BaseModel, validator
 
-
 class UserBase(BaseModel):
     username: str
 
@@ -53,7 +52,6 @@ class OrderInDB(BaseModel):
     cafeteria_id: int
     user_id: int
     status: bool
-
 
 class FavoriteSchemas(BaseModel):
     user_id: int

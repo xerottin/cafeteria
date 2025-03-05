@@ -2,7 +2,6 @@ from datetime import datetime
 from pydantic import BaseModel
 from typing import Literal
 
-
 class AuthResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"

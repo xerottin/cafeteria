@@ -6,7 +6,6 @@ from pydantic import ValidationError
 from database.hash import Hash
 from settings import SECRET_KEY, ALGORITHM
 
-
 def extract_token(token: str) -> dict:
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -14,12 +13,10 @@ def extract_token(token: str) -> dict:
     except (JWTError, ValidationError) as e:
         raise e
 
-
 def no_bcrypt(password: Optional[str] = None) -> str | None:
     if password:
         return Hash.bcrypt(password)
     return None
-
 
 # utils.py
 def update_model(data, model, fields_mapping):
@@ -36,4 +33,3 @@ def update_model(data, model, fields_mapping):
             if data_field == "password":
                 value = no_bcrypt(value)
             setattr(model, model_field, value)
-

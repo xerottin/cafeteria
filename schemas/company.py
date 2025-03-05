@@ -2,7 +2,6 @@ from typing import Optional
 
 from pydantic import BaseModel, validator
 
-
 class CompanyBase(BaseModel):
     username: str
 
