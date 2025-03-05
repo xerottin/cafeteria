@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship
 
 from models.base import BaseModel
 
-
 class Company(BaseModel):
     __tablename__ = 'company'
     username = Column(String, nullable=False, unique=True)

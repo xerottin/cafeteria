@@ -41,5 +41,3 @@ class Favorite(BaseModel):
 
     user = relationship("User", back_populates="favorites")
     coffee = relationship("Coffee", back_populates="favorites")
-
-

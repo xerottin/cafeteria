@@ -2,7 +2,6 @@ from sqlalchemy import Column, String, Integer, ForeignKey, Float, Boolean
 from sqlalchemy.orm import relationship
 from models import BaseModel
 
-
 class Cafeteria(BaseModel):
     __tablename__ = 'cafeteria'
     username = Column(String, nullable=False)
