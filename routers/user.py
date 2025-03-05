@@ -7,18 +7,23 @@ from schemas.user import UserCreate, UserUpdate
 
 router = APIRouter(prefix="/user", tags=["user"])
 
+
 @router.post("/")
 async def create_user(user: UserCreate, db: Session = Depends(get_pg_db)):
     return db_user.create_user(db, user)
+
+
 @router.get("/")
-async def get_user(db:Session = Depends(get_pg_db), user_data=Security(get_current_user)):
+async def get_user(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     pk = user_data.id
     return db_user.get_user_by_id(db, pk)
+
 
 @router.put("")
 async def update_user(user_update: UserUpdate, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     pk = user_data.id
     return db_user.update_user(db, pk, user_update)
+
 
 @router.delete("/")
 async def delete_user(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):

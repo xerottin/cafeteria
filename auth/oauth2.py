@@ -13,6 +13,7 @@ from schemas.admin import AdminBase
 from settings import SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, USERNAME, PASSWORD
 from utils.generator import extract_token
 
+
 def create_access_token(data: dict, secret_key: str = SECRET_KEY, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -25,6 +26,7 @@ def create_access_token(data: dict, secret_key: str = SECRET_KEY, expires_delta:
 
 
 oauth2_scheme_admin = OAuth2PasswordBearer(tokenUrl="admin_token")
+
 
 def get_current_admin(token: str = Depends(oauth2_scheme_admin), db: Session = Depends(get_pg_db)):
     credentials_exception = HTTPException(
@@ -52,6 +54,7 @@ def get_current_admin(token: str = Depends(oauth2_scheme_admin), db: Session = D
 
 oauth2_scheme_cafeteria = OAuth2PasswordBearer(tokenUrl="cafeteria_token")
 
+
 def get_current_cafeteria(token: str = Depends(oauth2_scheme_cafeteria), db: Session = Depends(get_pg_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -75,6 +78,7 @@ def get_current_cafeteria(token: str = Depends(oauth2_scheme_cafeteria), db: Ses
 
 
 oauth2_scheme_user = OAuth2PasswordBearer(tokenUrl="user_token")
+
 
 def get_current_user(token: str = Depends(oauth2_scheme_user), db: Session = Depends(get_pg_db)):
     credentials_exception = HTTPException(

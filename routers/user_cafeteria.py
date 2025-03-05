@@ -14,6 +14,7 @@ from schemas.user import OrderCreate
 
 router = APIRouter(prefix="", tags=["user_cafeteria"])
 
+
 def haversine_distance(lat1, lon1, lat2, lon2):
     R = 6371
     d_lat = math.radians(lat2 - lat1)
@@ -23,13 +24,14 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
 
+
 @router.get("/cafeterias/nearby", response_model=List[CafeteriaResponse])
 async def nearby_cafeterias(
-    latitude: float,
-    longitude: float,
-    radius: float = 5.0,
-    session = Depends(get_pg_db),
-    user_data=Security(get_current_user)
+        latitude: float,
+        longitude: float,
+        radius: float = 5.0,
+        session=Depends(get_pg_db),
+        user_data=Security(get_current_user)
 ):
     result = session.execute(select(Cafeteria))
     cafeterias = result.scalars().all()
@@ -44,9 +46,11 @@ async def nearby_cafeterias(
 
     return nearby_cafeterias
 
+
 @router.get("/cafeteria")
 async def get_cafeteria_menus(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     return db_user.get_cafeteria_menus(pk, db)
+
 
 @router.get("/menu/coffee")
 async def get_menu_coffee(pk: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
@@ -69,6 +73,7 @@ async def my_archive(db: Session = Depends(get_pg_db), user_data=Security(get_cu
 def favourite(coffee_id: int, db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     user_id = user_data.id
     return db_user.create_favourite(user_id, coffee_id, db)
+
 
 @router.get("favourite")
 async def my_favouirite(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):

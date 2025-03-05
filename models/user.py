@@ -2,6 +2,7 @@ from sqlalchemy import String, Column, Boolean, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from models import BaseModel
 
+
 class User(BaseModel):
     __tablename__ = 'user'
     username = Column(String, unique=True)
@@ -25,6 +26,7 @@ class Order(BaseModel):
     user = relationship("User", back_populates="orders")
     order_items = relationship("OrderItem", back_populates="order")
 
+
 class OrderItem(BaseModel):
     __tablename__ = 'order_item'
     coffee_id = Column(Integer, ForeignKey('coffee.id'))
@@ -33,6 +35,7 @@ class OrderItem(BaseModel):
 
     order = relationship("Order", back_populates="order_items")
     coffee = relationship("Coffee")
+
 
 class Favorite(BaseModel):
     __tablename__ = 'favorite'

@@ -10,11 +10,14 @@ from models.user import Order
 from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate, CoffeeCreate
 from utils.generator import no_bcrypt, update_model
 
+
 def get_client(db: Session, pk: int):
     return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
 
+
 def get_client_username(db: Session, username: str):
     return db.query(Cafeteria).filter_by(username=username, is_active=True).first()
+
 
 def create_cafeteria(db: Session, data: CafeteriaCreate):
     exist_cafeteria = db.query(Cafeteria).filter_by(username=data.username).first()
@@ -34,10 +37,14 @@ def create_cafeteria(db: Session, data: CafeteriaCreate):
     db.refresh(new_cafeteria)
     return new_cafeteria
 
+
 def get_cafeterias(db: Session, pk: int):
     return db.query(Cafeteria).filter_by(company_id=pk).all()
+
+
 def get_cafeteria(db: Session, pk: int):
     return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
+
 
 def update_cafeteria(db: Session, pk: int, data: CafeteriaUpdate):
     cafeteria = db.query(Cafeteria).filter_by(id=pk).first()
@@ -56,6 +63,7 @@ def update_cafeteria(db: Session, pk: int, data: CafeteriaUpdate):
     db.refresh(cafeteria)
     return cafeteria
 
+
 def delete_cafeteria(db: Session, pk: int):
     cafeteria = db.query(Cafeteria).filter_by(id=pk).first()
     if cafeteria is None:
@@ -65,7 +73,8 @@ def delete_cafeteria(db: Session, pk: int):
     db.refresh(cafeteria)
     return cafeteria
 
-def create_menu(data:MenuCreate, db: Session):
+
+def create_menu(data: MenuCreate, db: Session):
     exist_menu = db.query(Menu).filter_by(name=data.name).first()
     if exist_menu:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Name already exists")
@@ -76,11 +85,13 @@ def create_menu(data:MenuCreate, db: Session):
     db.refresh(new_menu)
     return new_menu
 
+
 def get_menus(cafeteria_id: int, db: Session):
     menu = db.query(Menu).filter_by(cafeteria_id=cafeteria_id).all()
     if menu is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
     return menu
+
 
 def get_menu(pk: int, db: Session):
     menu = db.query(Menu).filter_by(id=pk).first()
@@ -88,15 +99,19 @@ def get_menu(pk: int, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
     return menu
 
+
 def create_coffee(data: CoffeeCreate, db: Session):
     exist_coffee = db.query(Coffee).filter_by(name=data.name).first()
     if exist_coffee:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Coffee already exists")
-    new_coffee = Coffee(name=data.name, origin=data.origin, flavor_profile=data.flavor_profile, bean_type=data.bean_type, weight=data.weight, stock=data.stock, price=data.price, is_available=data.is_available, menu_id=data.menu_id )
+    new_coffee = Coffee(name=data.name, origin=data.origin, flavor_profile=data.flavor_profile,
+                        bean_type=data.bean_type, weight=data.weight, stock=data.stock, price=data.price,
+                        is_available=data.is_available, menu_id=data.menu_id)
     db.add(new_coffee)
     db.commit()
     db.refresh(new_coffee)
     return new_coffee
+
 
 def get_orders(pk, db: Session):
     orders = db.query(Order).filter_by(cafeteria_id=pk, status=True).all()
@@ -104,11 +119,13 @@ def get_orders(pk, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     return orders
 
+
 def get_order(pk, db: Session):
     order = db.query(Order).filter_by(id=pk, status=True).first()
     if order is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     return order
+
 
 def sent_order(pk, db: Session):
     order = db.query(Order).filter_by(id=pk).first()
@@ -129,4 +146,4 @@ def sent_order(pk, db: Session):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to process order: {str(e)}")
-    return {"message": "order sent successfully", "order_id" : order.id}
+    return {"message": "order sent successfully", "order_id": order.id}

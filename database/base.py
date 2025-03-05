@@ -19,6 +19,7 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
+
 def get_pg_db() -> Iterator[Session]:
     db = SessionLocal()
     try:
@@ -26,7 +27,9 @@ def get_pg_db() -> Iterator[Session]:
     finally:
         db.close()
 
+
 redis_client = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
+
 
 async def check_redis_connection():
     try:

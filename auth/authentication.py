@@ -12,6 +12,7 @@ from settings import USERNAME, PASSWORD
 
 router = APIRouter(tags=["authentication"])
 
+
 @router.post("/token", response_model=AuthResponse)
 def get_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_pg_db)):
     if request.username == USERNAME:
@@ -83,6 +84,7 @@ def get_admin_token(request: OAuth2PasswordRequestForm = Depends(), db: Session 
         "user_type": "user",
     }
 
+
 @router.post("/cafeteria_token", response_model=AuthResponse)
 def get_cafeteria_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_pg_db)):
     cafeteria = db.query(Cafeteria).filter_by(username=request.username).first()
@@ -98,6 +100,7 @@ def get_cafeteria_token(request: OAuth2PasswordRequestForm = Depends(), db: Sess
         "user_type": "cafeteria",
     }
 
+
 @router.post("/user_token", response_model=AuthResponse)
 def get_user_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_pg_db)):
     user = db.query(User).filter_by(username=request.username).first()
@@ -110,6 +113,7 @@ def get_user_token(request: OAuth2PasswordRequestForm = Depends(), db: Session =
             user_type="user"
         )
     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+
 
 @router.get("/cafeteria_me", response_model=CafeteriaInDB)
 def get_cafeteria_me(cafeteria=Security(get_current_cafeteria)):

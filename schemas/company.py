@@ -2,8 +2,10 @@ from typing import Optional
 
 from pydantic import BaseModel, validator
 
+
 class CompanyBase(BaseModel):
     username: str
+
 
 class CompanyInDB(CompanyBase):
     id: int
@@ -12,12 +14,14 @@ class CompanyInDB(CompanyBase):
     owner: str
     hashed_password: str
 
+
 class CompanyCreate(CompanyBase):
     password: str
     phone: str
     email: str
     logo: str
     owner: str
+
 
 class CompanyUpdate(BaseModel):
     username: Optional[str] | None = None

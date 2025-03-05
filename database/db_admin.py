@@ -7,6 +7,7 @@ from schemas.admin import AdminCreate, AdminUpdate
 from database.base import get_pg_db
 from utils.generator import no_bcrypt
 
+
 def create_admin(db: Session, data: AdminCreate):
     exist_admin = db.query(Admin).filter_by(username=data.username).first()
     if exist_admin:
@@ -17,11 +18,13 @@ def create_admin(db: Session, data: AdminCreate):
     db.refresh(new_admin)
     return new_admin
 
-def get_admin(pk:int, db: Session = Depends(get_pg_db)):
+
+def get_admin(pk: int, db: Session = Depends(get_pg_db)):
     admin = db.query(Admin).filter(Admin.id == pk).first()
     if not admin:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Admin not found")
     return admin
+
 
 def update_admin(db: Session, pk: int, data: AdminUpdate):
     same_admin = db.query(Admin).filter_by(username=data.username).first()
@@ -36,6 +39,7 @@ def update_admin(db: Session, pk: int, data: AdminUpdate):
     db.refresh(admin)
     return admin
 
+
 def delete_admin(pk: int, db: Session = Depends(get_pg_db)):
     admin = db.query(Admin).filter(Admin.id == pk).first()
     if not admin:
@@ -44,6 +48,7 @@ def delete_admin(pk: int, db: Session = Depends(get_pg_db)):
     db.commit()
     db.refresh(admin)
     return admin
+
 
 def get_admin_by_username(db: Session, username: str):
     return db.query(Admin).filter_by(username=username, is_active=True).first()

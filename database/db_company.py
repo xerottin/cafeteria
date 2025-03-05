@@ -10,7 +10,8 @@ from utils.generator import update_model
 from settings import ACCESS_TOKEN_EXPIRE_MINUTES
 from utils.generator import no_bcrypt
 
-def create_company(db: Session, data:CompanyCreate):
+
+def create_company(db: Session, data: CompanyCreate):
     existing_company = db.query(Company).filter_by(username=data.username).first()
     if existing_company:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
@@ -27,8 +28,10 @@ def create_company(db: Session, data:CompanyCreate):
     db.refresh(new_company)
     return new_company
 
+
 def get_company(pk: int, db: Session):
     return db.query(Company).filter_by(id=pk, is_active=True).first()
+
 
 def update_company(db: Session, pk: int, data: CompanyUpdate):
     company = db.query(Company).filter_by(id=pk, is_active=True).first()
@@ -46,6 +49,7 @@ def update_company(db: Session, pk: int, data: CompanyUpdate):
     db.commit()
     db.refresh(company)
     return company
+
 
 def delete_company(pk: int, db: Session):
     company = db.query(Company).filter_by(id=pk).first()
