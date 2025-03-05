@@ -24,4 +24,3 @@ async def update_user(user_update: UserUpdate, db: Session = Depends(get_pg_db),
 async def delete_user(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     pk = user_data.id
     return db_user.delete_user(db, pk)
-

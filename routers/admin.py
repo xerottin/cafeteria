@@ -9,7 +9,6 @@ from database.base import get_pg_db
 
 router = APIRouter(prefix="", tags=["admin"])
 
-
 @router.post("/", response_model=AdminResponse)
 async def create_admin(admin: AdminCreate, db: Session = Depends(get_pg_db)):
     return db_admin.create_admin(db, admin)

@@ -7,7 +7,6 @@ from schemas.company import CompanyCreate, CompanyUpdate
 
 router = APIRouter(prefix="/company", tags=["company"])
 
-
 @router.post("/")
 async def create_company(
     data: CompanyCreate,

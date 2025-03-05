@@ -14,7 +14,6 @@ from schemas.user import OrderCreate
 
 router = APIRouter(prefix="", tags=["user_cafeteria"])
 
-
 def haversine_distance(lat1, lon1, lat2, lon2):
     R = 6371
     d_lat = math.radians(lat2 - lat1)
@@ -23,7 +22,6 @@ def haversine_distance(lat1, lon1, lat2, lon2):
          math.cos(math.radians(lat2)) * math.sin(d_lon / 2) ** 2)
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
-
 
 @router.get("/cafeterias/nearby", response_model=List[CafeteriaResponse])
 async def nearby_cafeterias(
@@ -76,6 +74,3 @@ def favourite(coffee_id: int, db: Session = Depends(get_pg_db), user_data=Securi
 async def my_favouirite(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):
     user_id = user_data.id
     return db_user.get_my_fav(user_id, db)
-
-
-

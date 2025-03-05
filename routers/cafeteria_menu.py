@@ -14,12 +14,10 @@ async def create_menu(data:MenuCreate, db: Session = Depends(get_pg_db), cafeter
     cafeteria = db_cafeteria.create_menu(data, db)
     return cafeteria
 
-
 @router.get("/menu/all")
 async def get_menus(db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
     cafeteria_id = cafeteria_data.id
     return db_cafeteria.get_menus(cafeteria_id, db)
-
 
 @router.get("/menu")
 async def get_menu(pk: int, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
@@ -37,7 +35,6 @@ async def get_order_user(pk:int, db: Session = Depends(get_pg_db), cafeteria_dat
 @router.post("/menu/order/sent")
 async def send_order_user(pk:int, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
     return db_cafeteria.sent_order(pk, db)
-
 
 @router.post("/coffe")
 async def create_coffe(data:CoffeeCreate, db: Session = Depends(get_pg_db), cafeteria_data=Security(get_current_cafeteria)):
