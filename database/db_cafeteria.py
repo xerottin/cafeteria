@@ -10,13 +10,11 @@ from models.user import Order
 from schemas.cafeteria import CafeteriaCreate, CafeteriaUpdate, MenuCreate, CoffeeCreate
 from utils.generator import no_bcrypt, update_model
 
-
 def get_client(db: Session, pk: int):
     return db.query(Cafeteria).filter_by(id=pk, is_active=True).first()
 
 def get_client_username(db: Session, username: str):
     return db.query(Cafeteria).filter_by(username=username, is_active=True).first()
-
 
 def create_cafeteria(db: Session, data: CafeteriaCreate):
     exist_cafeteria = db.query(Cafeteria).filter_by(username=data.username).first()
@@ -89,7 +87,6 @@ def get_menu(pk: int, db: Session):
     if menu is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
     return menu
-
 
 def create_coffee(data: CoffeeCreate, db: Session):
     exist_coffee = db.query(Coffee).filter_by(name=data.name).first()

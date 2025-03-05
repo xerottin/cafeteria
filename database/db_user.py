@@ -10,7 +10,6 @@ from models.user import Order, OrderItem, Favorite
 from schemas.user import UserCreate, UserUpdate, OrderCreate
 from utils.generator import no_bcrypt
 
-
 def create_user(db: Session, data: UserCreate):
     exist_user = db.query(User).filter_by(username=data.username).first()
     if exist_user:
@@ -64,7 +63,6 @@ def delete_user(db: Session, pk: int):
     db.refresh(user)
     return user
 
-
 def get_cafeteria_menus(pk:int, db: Session):
     menu = db.query(Menu).filter(Menu.cafeteria_id == pk).all()
     if not menu:
@@ -76,7 +74,6 @@ def get_menu_coffee(pk:int, db: Session):
     if not coffee:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Coffee not found")
     return coffee
-
 
 def create_order_user(data: OrderCreate, db: Session, pk: int):
     new_order = Order(
@@ -97,11 +94,9 @@ def create_order_user(data: OrderCreate, db: Session, pk: int):
 
     return new_order
 
-
 def get_user_archive(user_id: int, db: Session):
     archive = redis_client.lrange(f"user:{user_id}:archives", 0, -1)
     return [json.loads(order) for order in archive]
-
 
 def create_favourite(user_id: int, coffee_id: int, db: Session):
     new_fav = Favorite(
@@ -112,7 +107,6 @@ def create_favourite(user_id: int, coffee_id: int, db: Session):
     db.commit()
     db.refresh(new_fav)
     return new_fav
-
 
 def get_my_fav(user_id: int, db: Session):
     fav = db.query(Favorite).filter_by(user_id=user_id).all()

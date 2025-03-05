@@ -7,7 +7,6 @@ from schemas.admin import AdminCreate, AdminUpdate
 from database.base import get_pg_db
 from utils.generator import no_bcrypt
 
-
 def create_admin(db: Session, data: AdminCreate):
     exist_admin = db.query(Admin).filter_by(username=data.username).first()
     if exist_admin:
@@ -36,7 +35,6 @@ def update_admin(db: Session, pk: int, data: AdminUpdate):
     db.commit()
     db.refresh(admin)
     return admin
-
 
 def delete_admin(pk: int, db: Session = Depends(get_pg_db)):
     admin = db.query(Admin).filter(Admin.id == pk).first()

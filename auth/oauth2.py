@@ -13,7 +13,6 @@ from schemas.admin import AdminBase
 from settings import SECRET_KEY, ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, USERNAME, PASSWORD
 from utils.generator import extract_token
 
-
 def create_access_token(data: dict, secret_key: str = SECRET_KEY, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
@@ -52,7 +51,6 @@ def get_current_admin(token: str = Depends(oauth2_scheme_admin), db: Session = D
 
 
 oauth2_scheme_cafeteria = OAuth2PasswordBearer(tokenUrl="cafeteria_token")
-
 
 def get_current_cafeteria(token: str = Depends(oauth2_scheme_cafeteria), db: Session = Depends(get_pg_db)):
     credentials_exception = HTTPException(

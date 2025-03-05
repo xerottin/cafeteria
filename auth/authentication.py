@@ -12,7 +12,6 @@ from settings import USERNAME, PASSWORD
 
 router = APIRouter(tags=["authentication"])
 
-
 @router.post("/token", response_model=AuthResponse)
 def get_token(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_pg_db)):
     if request.username == USERNAME:

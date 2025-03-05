@@ -19,7 +19,6 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
 def get_pg_db() -> Iterator[Session]:
     db = SessionLocal()
     try:
