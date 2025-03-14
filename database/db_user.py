@@ -11,21 +11,28 @@ from schemas.user import UserCreate, UserUpdate, OrderCreate
 from utils.generator import no_bcrypt
 
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
 def create_user(db: Session, data: UserCreate):
-    exist_user = db.query(User).filter_by(username=data.username).first()
-    if exist_user:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
-    new_user = User(
-        username=data.username,
-        name=data.name,
-        password=no_bcrypt(data.password),
-        email=data.email,
-        phone=data.phone,
-        image=data.image
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+    with db.begin():
+        exist_user = db.query(User).filter_by(username=data.username).first()
+        if exist_user:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
+
+        new_user = User(
+            username=data.username,
+            name=data.name,
+            password=pwd_context.hash(data.password),
+            email=data.email,
+            phone=data.phone,
+            image=data.image
+        )
+
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+
     return new_user
 
 
@@ -42,32 +49,45 @@ def get_user_by_username(db: Session, username: str):
 
 def update_user(db: Session, pk: int, data: UserUpdate):
     if data.username == 'admin':
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Wrong username or password')
-    same_user = db.query(User).filter_by(username=data.username, is_active=True).first()
-    if same_user and same_user.id != pk:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User is already exists")
-    user = db.query(User).filter_by(id=pk, is_active=True).first()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid username")
+
+    user = db.query(User).filter(User.id == pk, User.is_active == True).first()
     if not user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User not found")
-    if data.username: user.username = data.username
-    if data.name: user.name = data.name
-    if data.password: user.password = no_bcrypt(data.password)
-    if data.email: user.email = data.email
-    if data.phone: user.phone = data.phone
-    if data.image: user.image = data.image
-    db.commit()
-    db.refresh(user)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    if data.username and data.username != user.username:
+        exists = db.query(User).filter(User.username == data.username, User.is_active == True).first()
+        if exists:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="User already exists")
+
+    update_data = data.dict(exclude_unset=True)  # Исключаем None
+    if "password" in update_data:
+        update_data["password"] = pwd_context.hash(update_data["password"])
+
+    for key, value in update_data.items():
+        setattr(user, key, value)
+
+    try:
+        db.commit()
+        db.refresh(user)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Database error: " + str(e))
+
     return user
 
 
 def delete_user(db: Session, pk: int):
-    user = db.query(User).filter(User.id == pk).first()
+    user = db.query(User).filter(User.id == pk, User.is_active == True).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    user.is_active = False
-    db.commit()
-    db.refresh(user)
-    return user
+
+    with db.begin():
+        user.is_active = False
+        db.commit()
+        db.refresh(user)
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 def get_cafeteria_menus(pk: int, db: Session):
