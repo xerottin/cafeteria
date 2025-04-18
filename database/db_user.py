@@ -1,37 +1,36 @@
 import json
 
-from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
+from fastapi.openapi.models import Response
+from passlib.context import CryptContext
+from sqlalchemy.orm import Session
 
 from database.base import redis_client
 from models import User
 from models.cafeteria import Menu, Coffee
 from models.user import Order, OrderItem, Favorite
 from schemas.user import UserCreate, UserUpdate, OrderCreate
-from utils.generator import no_bcrypt
-
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def create_user(db: Session, data: UserCreate):
-    with db.begin():
-        exist_user = db.query(User).filter_by(username=data.username).first()
-        if exist_user:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
+    exist_user = db.query(User).filter_by(username=data.username).first()
+    if exist_user:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
 
-        new_user = User(
-            username=data.username,
-            name=data.name,
-            password=pwd_context.hash(data.password),
-            email=data.email,
-            phone=data.phone,
-            image=data.image
-        )
+    new_user = User(
+        username=data.username,
+        name=data.name,
+        password=pwd_context.hash(data.password),
+        email=data.email,
+        phone=data.phone,
+        image=data.image
+    )
 
-        db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
 
     return new_user
 
@@ -82,12 +81,12 @@ def delete_user(db: Session, pk: int):
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-    with db.begin():
-        user.is_active = False
-        db.commit()
-        db.refresh(user)
+    user.is_active = False
+    db.commit()
+    db.refresh(user)
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
 
 
 def get_cafeteria_menus(pk: int, db: Session):
@@ -139,7 +138,7 @@ def create_favourite(user_id: int, coffee_id: int, db: Session):
     db.refresh(new_fav)
     return new_fav
 
-
+#to-do not working
 def get_my_fav(user_id: int, db: Session):
     fav = db.query(Favorite).filter_by(user_id=user_id).all()
     if not fav:

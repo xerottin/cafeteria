@@ -13,11 +13,10 @@ class CafeteriaInDB(CafeteriaBase):
     id: int
     phone: str
     url: str
-    company_id: str
+    company_id: int
     created_at: datetime
     updated_at: datetime
     is_active: bool
-    logo: str
 
 
 class CafeteriaCreate(CafeteriaBase):
