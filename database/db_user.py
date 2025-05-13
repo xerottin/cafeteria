@@ -10,6 +10,7 @@ from models import User
 from models.cafeteria import Menu, Coffee
 from models.user import Order, OrderItem, Favorite
 from schemas.user import UserCreate, UserUpdate, OrderCreate
+from utils.generator import generate_verification_code
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -19,21 +20,43 @@ def create_user(db: Session, data: UserCreate):
     if exist_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Username already exists")
 
+    verification_code = generate_verification_code()
+
     new_user = User(
         username=data.username,
         name=data.name,
         password=pwd_context.hash(data.password),
         email=data.email,
         phone=data.phone,
-        image=data.image
+        image=data.image,
+        is_verified=False,
+        verification_code=verification_code
     )
 
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
+    print(f"Код подтверждения для {new_user.username}: {verification_code}")
+
     return new_user
 
+def verify_user(db: Session, username: str, code: str):
+    user = db.query(User).filter_by(username=username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    if user.is_verified:
+        raise HTTPException(status_code=400, detail="User already verified")
+
+    if user.verification_code != code:
+        raise HTTPException(status_code=400, detail="Invalid verification code")
+
+    user.is_verified = True
+    user.verification_code = None
+
+    db.commit()
+    return {"message": "User successfully verified"}
 
 def get_user_by_id(db: Session, pk: int):
     user = db.query(User).filter_by(id=pk, is_active=True).first()

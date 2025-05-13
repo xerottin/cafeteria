@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from auth.oauth2 import get_current_user
 from database import db_user
 from database.base import get_pg_db
-from schemas.user import UserCreate, UserUpdate, UserResponse
+from schemas.user import UserCreate, UserUpdate, UserResponse, UserVerificationRequest
 
 router = APIRouter(prefix="/user", tags=["user"])
 
@@ -12,6 +12,9 @@ router = APIRouter(prefix="/user", tags=["user"])
 async def create_user(user: UserCreate, db: Session = Depends(get_pg_db)):
     return db_user.create_user(db, user)
 
+@router.post("/verify")
+def verify_account(payload: UserVerificationRequest, db: Session = Depends(get_pg_db)):
+    return db_user.verify_user(db, payload.username, payload.code)
 
 @router.get("/")
 async def get_user(db: Session = Depends(get_pg_db), user_data=Security(get_current_user)):

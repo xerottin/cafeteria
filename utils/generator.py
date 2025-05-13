@@ -1,3 +1,5 @@
+import random
+
 from typing import Optional
 
 from jose import jwt, JWTError
@@ -36,3 +38,7 @@ def update_model(data, model, fields_mapping):
             if data_field == "password":
                 value = no_bcrypt(value)
             setattr(model, model_field, value)
+
+
+def generate_verification_code() -> str:
+    return str(random.randint(100000, 999999))

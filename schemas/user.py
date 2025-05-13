@@ -25,6 +25,10 @@ class UserCreate(UserBase):
     phone: str
     image: str
 
+class UserVerificationRequest(BaseModel):
+    username: str
+    code: str
+
 class UserResponse(BaseModel):
     id: int
     username: str

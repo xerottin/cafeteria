@@ -12,6 +12,9 @@ class User(BaseModel):
     phone = Column(String)
     image = Column(String)
 
+    is_verified = Column(Boolean, default=False)
+    verification_code = Column(String, nullable=True)
+
     orders = relationship('Order', back_populates="user")
     favorites = relationship("Favorite", back_populates="user")
 
