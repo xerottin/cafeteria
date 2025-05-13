@@ -40,6 +40,12 @@ Ensure you have Docker installed. If not, install it using:
     docker compose up --build
 ```
 
+## Structure of project
+
+http://0.0.0.0:8009/user/docs#/
+http://0.0.0.0:8009/admin/docs#/
+http://0.0.0.0:8009/cafeteria/docs#/
+
 ## Conclusion
 
 Project is now set up for local development and testing! Feel free to customize the Docker configuration and database settings to suit your needs.

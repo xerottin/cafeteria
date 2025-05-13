@@ -168,3 +168,4 @@ test
 demoCA
 
 test.py
+.dockerignore

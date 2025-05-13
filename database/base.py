@@ -1,3 +1,5 @@
+import os
+
 from typing import Iterator
 
 from sqlalchemy import create_engine
@@ -28,7 +30,8 @@ def get_pg_db() -> Iterator[Session]:
         db.close()
 
 
-redis_client = redis.StrictRedis(host="localhost", port=6379, db=0, decode_responses=True)
+redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
+redis_client = redis.StrictRedis.from_url(redis_url, decode_responses=True)
 
 
 async def check_redis_connection():
