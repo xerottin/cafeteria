@@ -1,51 +1,56 @@
-# ☕ **Cafeteria** - Simplifying Your Coffee Ordering Experience
+# ☕ **Cafeteria** - Streamline Your Coffee Ordering Experience
 
-## 🌟 Overview
+## 🚀 Overview
 
-**Cafeteria** is a robust backend system built to streamline the coffee ordering process. By leveraging cutting-edge technologies, this project ensures users can easily place orders with minimal delay, offering an efficient and enjoyable experience.
-
----
+**Cafeteria** is a robust backend system designed to simplify and accelerate the coffee ordering process. With real-time communication and a clean API structure, users can enjoy an efficient ordering experience.
 
 ## 🛠 Technologies Used
 
-* **[FastAPI](https://fastapi.tiangolo.com/)** — High-performance framework for rapid API development.
-* **WebSockets** — Real-time, bidirectional communication.
-* **PostgreSQL** — Reliable and scalable database system.
-* **Redis** — Caching and message-brokering for improved performance.
-* **Docker** — Containerization to simplify deployment and testing.
+* **FastAPI** - Modern, high-performance web framework for APIs.
+* **WebSockets** - Real-time bidirectional communication.
+* **PostgreSQL** - Reliable relational database management system.
+* **Redis** - Fast caching and message brokering.
+* **Docker** - Containerization platform for easy deployment.
 
----
+## 📌 Project Structure and API Endpoints
 
-## 📦 Project Structure and API Endpoints
-
-The backend provides structured APIs divided into clear segments:
-
-### 📌 User API
+### 🧑 User API
 
 * `POST /user/register` – Register new users.
-* `POST /user/login` – Authenticate users and provide access tokens.
+* `POST /user/verify` – Verify user account with a verification code.
 * `GET /user/profile` – Retrieve user profile information.
+* `GET /user/nearby-cafeteria` – Find nearby cafeterias.
+* `GET /user/cafeteria/{id}/menu` – Retrieve the menu of a specific cafeteria.
+* `GET /user/menu/{id}/coffee` – Retrieve details of a specific coffee.
+* `POST /user/order` – Create a new coffee order.
+* `GET /user/orders/archive` – Retrieve archive of user orders.
+* `POST /user/favourite` – Add items to user's favourites.
+* `GET /user/favourites` – Retrieve user's favourite items.
 
 **Documentation:** [http://0.0.0.0:8009/user/docs#/](http://0.0.0.0:8009/user/docs#/)
 
-### 🔧 Admin API
+### ⚙️ Admin API
 
-* `POST /admin/login` – Admin authentication.
+* `POST /admin/login` – Authenticate admin users.
 * `GET /admin/orders` – View and manage all orders.
-* `PUT /admin/orders/{id}` – Update order status.
+* `PUT /admin/orders/{id}` – Update the status of an order.
+* CRUD operations for managing admins.
+* CRUD operations for managing cafeterias.
 
 **Documentation:** [http://0.0.0.0:8009/admin/docs#/](http://0.0.0.0:8009/admin/docs#/)
 
 ### ☕ Cafeteria API
 
-* `GET /cafeteria/menu` – Retrieve current coffee menu.
-* `POST /cafeteria/order` – Place new orders.
-* `GET /cafeteria/order/{id}` – Check order status.
-* `WebSocket /cafeteria/ws/orders` – Real-time order updates.
+* `POST /cafeteria/menu` – Create a new menu.
+* `GET /cafeteria/menu/{id}` – Retrieve a specific menu.
+* `GET /cafeteria/menus` – Retrieve all menus.
+* `POST /cafeteria/coffee` – Create a new coffee item.
+* `GET /cafeteria/orders` – Retrieve orders placed by users.
+* `GET /cafeteria/orders/{user_id}` – Retrieve orders placed by a specific user.
+* `POST /cafeteria/orders/{id}/send` – Send (dispatch) an order to a user.
+* `WebSocket /cafeteria/ws/orders` – Real-time updates on orders.
 
 **Documentation:** [http://0.0.0.0:8009/cafeteria/docs#/](http://0.0.0.0:8009/cafeteria/docs#/)
-
----
 
 ## 🖥 Running the Project Locally
 
@@ -55,24 +60,22 @@ The backend provides structured APIs divided into clear segments:
 git clone https://github.com/xerottin/cafeteria.git
 ```
 
-### 2. Install Docker
+### 2. Ensure Docker is Installed
 
-Ensure Docker is installed. Download from [Docker](https://www.docker.com/) if needed.
+Install Docker from the official site if necessary: [Docker](https://www.docker.com/).
 
-### 3. Create Docker Network
+### 3. Create a Docker Network
 
 ```bash
 docker network create cafeteria-network
 ```
 
-### 4. Build and Run with Docker Compose
+### 4. Build and Run Docker Containers
 
 ```bash
-docker compose up --build -d
+docker compose up --build
 ```
 
----
+## 🎉 Conclusion
 
-## 🚦 Conclusion
-
-You are now ready to develop and test locally! Customize Docker and database configurations to fit your development needs. Happy coding!
+Your local development environment is now ready! Feel free to customize the Docker setup and database configurations as per your needs.
