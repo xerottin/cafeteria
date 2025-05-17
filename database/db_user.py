@@ -167,3 +167,4 @@ def get_my_fav(user_id: int, db: Session):
     if not fav:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favourite not found")
     return fav
+
